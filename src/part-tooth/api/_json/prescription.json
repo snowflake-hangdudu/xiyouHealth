@@ -1,0 +1,17 @@
+{
+  "id": "主键id",
+  "userId": "用户id",
+  "userName": "患者姓名",
+  "userSex": "患者性别",
+  "userAge": "患者年龄",
+  "userIdCard": "身份证号",
+  "userFamily": "患者信息",
+  "disease": "病情自述",
+  "diagnose": "诊断",
+  "fastRecord": "初诊图片",
+  "doctorId": "医生id",
+  "prescriptionApplyDetailsList": "处方申请药品信息",
+  "status": "处方申请状态",
+  "createdAt": "创建时间",
+  "updatedAt": "修改时间"
+}

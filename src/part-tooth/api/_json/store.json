@@ -1,0 +1,7 @@
+{
+  "id": "ID",
+  "userId": "用户id",
+  "storeName": "门店名称",
+  "createdAt": "创建时间",
+  "updatedAt": "更新时间"
+}

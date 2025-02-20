@@ -1,0 +1,12 @@
+{
+  "id": "医生主键id",
+  "doctorName": "姓名",
+  "doctorHeadImg": "头像",
+  "doctorTel": "联系人手机号",
+  "introductory": "个人简介",
+  "storeId": "所属门店",
+  "storeName": "门店名称",
+  "referrerUserImg": "引流用户二维码链接地址",
+  "createdAt": "创建时间",
+  "updatedAt": "更新时间"
+}

@@ -1,0 +1,10 @@
+.tox-silver-sink {
+  z-index: 3000!important;
+}
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}

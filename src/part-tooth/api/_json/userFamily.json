@@ -1,0 +1,15 @@
+{
+  "id": "主键id",
+  "userName": "昵称",
+  "password": "密码",
+  "role": "角色",
+  "headImg": "头像",
+  "sex": "性别",
+  "idCard": "身份证号",
+  "tel": "电话",
+  "publicOpenId": "公众号openId",
+  "referrerDoctorId": "引流医生id",
+  "birthday": "生日",
+  "createdAt": "创建时间",
+  "updatedAt": "修改时间"
+}
