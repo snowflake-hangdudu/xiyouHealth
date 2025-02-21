@@ -36,7 +36,7 @@
       style="width: 100%; overflow-x: auto">
       <el-table-column prop="id" label="ID" align="center" width="80" />
 
-      <el-table-column prop="title" label="标题" align="center">
+      <el-table-column prop="title" label="商品名" align="center">
         <template #default="scope">
           {{ scope.row.title }}
         </template>
@@ -92,7 +92,7 @@
         label-position="left"
         label-width="100px"
         style="width: 400px; margin-left: 50px">
-        <el-form-item label="标题" prop="title">
+        <el-form-item label="商品名" prop="title">
           <el-input v-model="tb.row.title" clearable placeholder="请输入商品标题" />
         </el-form-item>
         <el-form-item label="图片" prop="imageUrl">

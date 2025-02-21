@@ -46,6 +46,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column prop="name" label="姓名" align="center">
+        <template #default="scope: ElTableRow<AccountModel>">
+          {{ scope.row.name }}
+        </template>
+      </el-table-column>
+
       <el-table-column prop="id" label="电话" align="center">
         <template #default="scope: ElTableRow<AccountModel>">
           {{ scope.row.phone }}
@@ -96,21 +102,6 @@
         <el-form-item label="电话" prop="phone">
           <el-input v-model="tb.row.phone" clearable placeholder="请输入电话" />
         </el-form-item>
-        <el-form-item label="等级" prop="level">
-          <el-radio-group v-model="tb.row.level">
-            <el-radio label="super">维护管理员</el-radio>
-            <el-radio label="common">普通管理员</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="有效日期" prop="expireDate" style="width: 100%">
-          <el-date-picker
-            v-model="tb.row.expireDate"
-            type="datetime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            placeholder="请选择到期时间"
-            format="YYYY-MM-DD HH:mm:ss" />
-        </el-form-item>
       </el-form>
 
       <template #footer class="dialog-footer">
@@ -158,6 +149,27 @@ const getLevel = (level?: string): string => {
       return '未知角色'
   }
 }
+
+tb.list = [
+  {
+    id: 1,
+    account: 'admin',
+    phone: '1234567890',
+    name: '腾举'
+  },
+  {
+    id: 2,
+    account: 'hangdudu',
+    phone: '0987654321',
+    name: '阿乐'
+  },
+  {
+    id: 3,
+    account: 'haha',
+    phone: '1122334455',
+    name: '佚名'
+  }
+]
 
 const reviewAccount = ref<any>()
 const openReviewAccount = (row) => {

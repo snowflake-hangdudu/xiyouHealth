@@ -6,7 +6,7 @@
         style="width: 320px"
         v-model="tb.query.account"
         clearable
-        placeholder="请输入账号"
+        placeholder="请输入反馈人姓名"
         @input="actions.queryAll({ resetPage: true })">
         <template #prepend>账号</template>
       </el-input>
@@ -16,7 +16,7 @@
         style="width: 320px"
         v-model="tb.query.phone"
         clearable
-        placeholder="请输入电话"
+        placeholder="请输入反馈人电话"
         @input="actions.queryAll({ resetPage: true })">
         <template #prepend>电话</template>
       </el-input>
@@ -34,31 +34,30 @@
       border
       align="center"
       style="width: 100%; overflow-x: auto">
-      <el-table-column prop="id" label="ID" align="center">
-        <template #default="scope: ElTableRow<AccountModel>">
+      <el-table-column prop="id" label="ID" align="center" width="80">
+        <template #default="scope">
           {{ scope.row.id }}
         </template>
       </el-table-column>
 
-      <el-table-column prop="id" label="意见反馈内容" align="center">
-        <template #default="scope: ElTableRow<AccountModel>">
-          {{ scope.row.account }}
+      <el-table-column prop="content" label="意见反馈内容" align="center" min-width="200">
+        <template #default="scope">
+          {{ scope.row.content }}
         </template>
       </el-table-column>
 
-      <el-table-column prop="id" label="反馈人信息" align="center">
-        <template #default="scope: ElTableRow<AccountModel>">
-          {{ scope.row.phone }}
+      <el-table-column prop="content" label="意见反馈图片" align="center" min-width="200">
+        <template #default="scope">
+          <el-image :src="scope.row.content" style="width: 100px; height: 100px; object-fit: cover" :preview-src-list="[scope.row.content]" />
         </template>
       </el-table-column>
 
-      <el-table-column prop="id" label="操作" align="center">
-        <template #default="scope: ElTableRow<AccountModel>">
-          <el-button type="text" @click="() => actions.edit(scope.row)">编辑</el-button>
+      <el-table-column prop="userInfo" label="反馈人信息" align="center" width="200">
+        <template #default="scope">
+          {{ scope.row.userInfo }}
         </template>
       </el-table-column>
     </el-table>
-
     <!-- 翻页 -->
     <div class="pagination-container" v-if="tb.total">
       <el-pagination
@@ -159,9 +158,31 @@ const getLevel = (level?: string): string => {
   }
 }
 
-const reviewAccount = ref<any>()
-const openReviewAccount = (row) => {
-  console.log('点击了没')
-  reviewAccount.value.showModal(row)
-}
+tb.list = [
+  {
+    id: 1,
+    content: '应用界面不够友好，希望能改进一下',
+    userInfo: '张三 (13800138000)'
+  },
+  {
+    id: 2,
+    content: '希望能增加更多的健康知识内容',
+    userInfo: '李四 (13900139000)'
+  },
+  {
+    id: 3,
+    content: '运动记录功能有时候不太准确',
+    userInfo: '王五 (13700137000)'
+  },
+  {
+    id: 4,
+    content: '希望能增加社交功能，和朋友一起互动',
+    userInfo: '赵六 (13600136000)'
+  },
+  {
+    id: 5,
+    content: '饮食建议功能非常实用，希望能继续完善',
+    userInfo: '钱七 (13500135000)'
+  }
+]
 </script>

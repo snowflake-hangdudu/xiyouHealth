@@ -6,7 +6,7 @@
         style="width: 320px"
         v-model="tb.query.id"
         clearable
-        placeholder="请输入用户ID"
+        placeholder="请输入用户姓名"
         @input="actions.queryAll({ resetPage: true })">
         <template #prepend>用户ID</template>
       </el-input>
@@ -70,7 +70,19 @@
         </template>
       </el-table-column>
 
+      <el-table-column prop="hasPassword" label="是否已组队" align="center">
+        <template #default="scope">
+          <el-switch v-model="scope.row.hasPassword" disabled></el-switch>
+        </template>
+      </el-table-column>
+
       <el-table-column prop="journeyStarted" label="是否开启旅程" align="center">
+        <template #default="scope">
+          <el-switch v-model="scope.row.journeyStarted" disabled></el-switch>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="journeyStarted" label="是否解锁当日挑战内容" align="center">
         <template #default="scope">
           <el-switch v-model="scope.row.journeyStarted" disabled></el-switch>
         </template>
@@ -96,7 +108,9 @@
 
       <el-table-column label="操作" align="center">
         <template #default="scope">
-          <el-button @click="openRemark(scope.row)" link type="primary">编辑</el-button>
+          <el-button @click="openGroup(scope.row)" link type="primary">组队</el-button>
+          <el-button @click="openRemark(scope.row)" link type="primary">关联健康报告</el-button>
+          <el-button @click="openRemark(scope.row)" link type="primary">关联运动处方</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -114,12 +128,16 @@
         @current-change="actions.pageChange" />
     </div>
   </div>
+  <!-- 备注弹窗 -->
+  <Group ref="groupRef" @close="actions.queryAll()" />
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
+import Group from './group.vue'
+import Detail from '../../../public-weekChange/pages/detail.vue'
 import refTable from '@/public/basic-table'
 import UserQuery, { UserModel, UserQueryParmas } from '../../api/user'
 import { qiniuUrl } from '@/config/qiniu'
@@ -129,12 +147,6 @@ const { request } = http
 
 /** 创建表格，与表格相关操作 */
 const [tb, actions] = refTable<UserModel, UserQueryParmas, UserQuery>(new UserQuery(), {})
-
-const remarkRef = ref<any>(null)
-
-const openRemark = (row: UserModel) => {
-  remarkRef.value.showModal(row)
-}
 
 // Example data for demonstration
 tb.list = [
@@ -147,39 +159,17 @@ tb.list = [
     journeyStarted: true,
     hasWeeklyChallenge: false,
     totalPoints: 150
-  },
-  {
-    id: 2,
-    name: 'Jane Smith',
-    phone: '0987654321',
-    schoolCardUrl: '',
-    hasPassword: true,
-    journeyStarted: false,
-    hasWeeklyChallenge: true,
-    totalPoints: 280
-  },
-  {
-    id: 3,
-    name: 'Alice Johnson',
-    phone: '5555555555',
-    schoolCardUrl: '',
-    hasPassword: false,
-    journeyStarted: true,
-    hasWeeklyChallenge: true,
-    totalPoints: 420
-  },
-  {
-    id: 4,
-    name: 'Bob Williams',
-    phone: '9876543210',
-    schoolCardUrl: '',
-    hasPassword: true,
-    journeyStarted: true,
-    hasWeeklyChallenge: true,
-    totalPoints: 350
   }
 ]
 
-// Set total for pagination
-tb.total = tb.list.length
+const groupRef = ref<any>(null)
+
+const detailRef = ref<any>(null)
+const openGroup = (row: UserModel) => {
+  groupRef.value.showModal(row)
+}
+
+const openDetail = (row: UserModel) => {
+  detailRef.value.showModal(row)
+}
 </script>

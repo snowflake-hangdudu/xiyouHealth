@@ -21,12 +21,12 @@ router.beforeEach(async (to, from, next) => {
   loadStart()
 
   if (!appStore.getUserInfo && wsCache.get('admin-token')) {
-    const res = (await getUserInfoApi()).data
-    //模拟登录数据
-    // const res = {
-    //   id: 1,
-    //   role: ['admin']
-    // }
+    // const res = (await getUserInfoApi()).data
+    // 模拟登录数据
+    const res = {
+      id: 1,
+      role: ['super']
+    }
     console.warn('Load Userinfo:', res)
     appStore.setUserInfo(Object.assign({}, res))
     onInitUserInfo()

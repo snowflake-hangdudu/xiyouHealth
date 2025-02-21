@@ -35,9 +35,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="content" label="相关题目(多个，题目，答案)" align="center">
+      <el-table-column prop="content" label="题目" align="center">
         <template #default="scope">
-          {{ scope.row.content }}
+          {{ scope.row.qus }}
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="content" label="答案" align="center">
+        <template #default="scope">
+          <el-switch v-model="scope.row.isOnline"></el-switch>
         </template>
       </el-table-column>
 
@@ -58,7 +64,7 @@
       <!-- Content Column -->
       <el-table-column prop="participantInfo" label="参与答题人信息" align="center">
         <template #default="scope">
-          <el-button @click="actions.edit(scope.row)" link type="primary">查看详情</el-button>
+          <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
         </template>
       </el-table-column>
 
@@ -83,7 +89,7 @@
         @current-change="(v) => actions.pageChange(v)" />
     </div>
   </div>
-  <el-dialog v-model="tb.addDialogVisible" :title="actions.dialogTitle" width="620px" @closed="tb.isNew = false">
+  <el-dialog v-model="tb.addDialogVisible" title="学习内容" width="620px" @closed="tb.isNew = false">
     <el-form
       ref="editPwdRef"
       v-if="tb.addDialogVisible"
@@ -93,15 +99,23 @@
       label-position="left"
       label-width="100px"
       style="width: 400px; margin-left: 50px">
-      <el-form-item label="标题" prop="title">
+      <el-form-item label="学习内容标题" prop="title">
         <el-input v-model="tb.row.title" clearable placeholder="请输入标题" />
       </el-form-item>
 
-      <el-form-item label="内容" prop="content">
+      <el-form-item label="内容(视频)" prop="content">
         <Sin v-model="tb.row.content" folderType="video" />
       </el-form-item>
 
-      <el-form-item label="是否下架" prop="isOnline">
+      <el-form-item label="题目" prop="content">
+        <el-input v-model="tb.row.name" placeholder=""></el-input>
+      </el-form-item>
+
+      <el-form-item label="答案(是否)" prop="content">
+        <el-switch v-model="tb.row.isOnline" />
+      </el-form-item>
+
+      <el-form-item label="上/下架" prop="isOnline">
         <el-switch v-model="tb.row.isOnline" />
       </el-form-item>
 
@@ -128,18 +142,20 @@
       </el-button>
     </template>
   </el-dialog>
+  <!-- 详情弹窗 -->
+  <Detail ref="detailRef" @close="actions.queryAll()" />
 </template>
 
 <script lang="ts" setup>
 import refTable from '@/public/basic-table'
 import { ref } from 'vue'
+import Detail from '../../public-weekChange/pages/detail.vue'
 import { Plus } from '@element-plus/icons-vue'
 import MentorQuery, { MentorModel, MentorQueryParmas } from '../api/mentor'
 import { qiniuUrl, qiniuTokenUrl, qiniuUploadUrl } from '@/config/qiniu'
 import type { FormInstance } from 'element-plus'
 import Sin from '@/widget/upload-qiniu/index.vue'
 import { useValidate } from '@/hooks/web/useValidate'
-
 import http from '@/config/axios'
 import { ElMessage } from 'element-plus'
 const { request } = http
@@ -154,18 +170,26 @@ tb.list = [
   {
     id: 1,
     title: '学习内容1',
-    content: '视频地址1',
+    content: '',
     isOnline: true,
     date: '2024-01-01 12:00:00',
-    participantInfo: '一些参与信息'
+    participantInfo: '一些参与信息',
+    qus: '你今天锻炼了吗'
   },
   {
     id: 2,
     title: '学习内容2',
-    content: '视频地址2',
+    content: '',
     isOnline: false,
     date: '2024-02-02 13:00:00',
-    participantInfo: '另一些参与信息'
+    participantInfo: '另一些参与信息',
+    qus: '你今天运动了吗'
   }
 ]
+
+const detailRef = ref<any>(null)
+
+const openDetail = (row: any) => {
+  detailRef.value.showModal(row)
+}
 </script>

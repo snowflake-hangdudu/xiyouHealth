@@ -6,9 +6,9 @@
         style="width: 320px"
         v-model="tb.query.name"
         clearable
-        placeholder="请输入学院名称"
+        placeholder="请输入任务任务标题"
         @input="actions.queryAll({ resetPage: true })">
-        <template #prepend>学院</template>
+        <template #prepend>任务任务标题</template>
       </el-input>
 
       <div style="display: flex; flex: 1; justify-content: flex-end">
@@ -30,7 +30,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="name" label="标题" align="center">
+      <el-table-column prop="name" label="任务标题" align="center">
         <template #default="scope">
           {{ scope.row.name }}
         </template>
@@ -42,15 +42,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="participants" label="完成任务人员信息（包含上传的图片）" align="center">
+      <el-table-column prop="participants" label="开启任务人员信息" align="center">
         <template #default="scope">
-          <el-button @click="actions.edit(scope.row)" link type="primary">查看详情</el-button>
+          <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
         </template>
       </el-table-column>
 
-      <el-table-column prop="participants" label="未完成任务人员信息" align="center">
+      <el-table-column prop="participants" label="完成任务人员信息" align="center">
         <template #default="scope">
-          <el-button @click="actions.edit(scope.row)" link type="primary">查看详情</el-button>
+          <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
         </template>
       </el-table-column>
 
@@ -105,10 +105,10 @@
         label-position="left"
         label-width="100px"
         style="width: 400px; margin-left: 50px">
-        <el-form-item label="标题" prop="name">
+        <el-form-item label="任务标题" prop="name">
           <el-input v-model="tb.row.name" clearable placeholder="请输入账号" />
         </el-form-item>
-        <el-form-item label="内容" prop="content">
+        <el-form-item label="任务内容" prop="content">
           <el-input v-model="tb.row.content" clearable placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="上/下架" prop="isBan">
@@ -138,9 +138,11 @@
       </template>
     </el-dialog>
   </div>
+  <Detail ref="detailRef" @close="actions.queryAll()" />
 </template>
 
 <script lang="ts" setup>
+import Detail from '../../public-weekChange/pages/detail.vue'
 import refTable from '@/public/basic-table'
 import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
@@ -160,32 +162,33 @@ const [tb, actions] = refTable<CollegeModel, CollegeQueryParmas, CollegeQuery>(n
 tb.list = [
   {
     id: 1,
-    name: '计算机学院',
-    content: '计算机科学与技术',
+    name: '运动任务1',
+    content: '跑步10分钟随机拍照',
     participants: '张三, 李四',
     isBan: false,
     createdAt: '2025-02-19 10:00:00'
   },
   {
     id: 2,
-    name: '法学院',
-    content: '法律专业',
+    name: '运动任务2',
+    content: '跑步20分钟随机拍照',
     participants: '王五, 赵六',
     isBan: true,
     createdAt: '2025-02-18 09:30:00'
   },
   {
     id: 3,
-    name: '机械工程学院',
-    content: '机械工程与自动化',
+    name: '运动任务3',
+    content: '跑步30分钟随机拍照',
     participants: '刘七, 陈八',
     isBan: false,
     createdAt: '2025-02-17 14:15:00'
   }
 ]
 
-// 模拟 `tb.total` 和 `tb.query`
-tb.total = tb.list.length
-tb.query.pageNum = 1
-tb.query.pageSize = 10
+const detailRef = ref<any>(null)
+
+const openDetail = (row: any) => {
+  detailRef.value.showModal(row)
+}
 </script>

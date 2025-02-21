@@ -1,30 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container-flex" style="flex-wrap: wrap">
-      <el-input
-        class="filter-item"
-        style="width: 320px"
-        v-model="tb.query.labName"
-        clearable
-        placeholder="请输入实验室名称"
-        @input="actions.queryAll({ resetPage: true })">
-        <template #prepend>实验室名称</template>
-      </el-input>
-
-      <el-select
-        class="filter-item"
-        v-model="tb.query.bindUserName"
-        clearable
-        placeholder="实验室管理员"
-        @change="actions.queryAll()"
-        style="width: 320px">
-        <el-option
-          v-for="item in bindUserOptions.filter((item) => item.name)"
-          :key="item.id"
-          :label="item.name || '该账号无姓名'"
-          :value="item.name" />
-      </el-select>
-      <div style="display: flex; flex: 1; justify-content: flex-end">
+      <div style="display: flex; flex: 1; justify-remark: flex-end">
         <el-button class="filter-item" type="primary" :icon="Plus" @click="actions.add()">新建每周挑战</el-button>
       </div>
     </div>
@@ -43,33 +20,21 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="LabName" label="标题" align="center">
-        <template #default="scope: ElTableRow<LabModel>">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-
-      <el-table-column prop="remark" label="挑战内容" align="center">
+      <el-table-column prop="remark" label="每周挑战内容" align="center">
         <template #default="scope: ElTableRow<LabModel>">
           {{ scope.row.remark }}
         </template>
       </el-table-column>
 
-      <el-table-column prop="mobile" label="显示列表" align="center">
+      <el-table-column prop="mobile" label="开启该周挑战的人信息" align="center">
         <template #default="scope: ElTableRow<LabModel>">
-          {{ scope.row.bindUserList ? scope.row.bindUserList.join(',') : '--' }}
+          <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
         </template>
       </el-table-column>
 
-      <el-table-column prop="deviceCount" label="完成挑战人信息（包含上传的图片）" align="center">
+      <el-table-column prop="deviceCount" label="完成该周挑战人信息（包含上传的图片）" align="center">
         <template #default="scope: ElTableRow<LabModel>">
-          <el-button @click="actions.edit(scope.row)" link type="primary">查看详情</el-button>
-        </template>
-      </el-table-column>
-
-      <el-table-column prop="deviceCount" label="未完成挑战人信息" align="center">
-        <template #default="scope: ElTableRow<LabModel>">
-          <el-button @click="actions.edit(scope.row)" link type="primary">查看详情</el-button>
+          <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
         </template>
       </el-table-column>
 
@@ -93,7 +58,7 @@
         @current-change="(v: number) => actions.pageChange(v)" />
     </div>
     <!-- 添加/审核数据的弹窗 -->
-    <el-dialog v-model="tb.addDialogVisible" :title="actions.dialogTitle" width="800px" @closed="tb.isNew = false">
+    <el-dialog v-model="tb.addDialogVisible" title="每周挑战" width="800px" @closed="tb.isNew = false">
       <el-form
         ref="editPwdRef"
         v-if="tb.addDialogVisible"
@@ -103,7 +68,7 @@
         label-position="left"
         label-width="110px"
         style="width: 600px; margin-left: 50px">
-        <el-form-item label="标题" prop="name">
+        <el-form-item label="每周挑战内容" prop="name">
           <el-input v-model="tb.row.name" clearable placeholder="请输入房间名称" />
         </el-form-item>
         <div style="margin: 40px 0"></div>
@@ -141,8 +106,10 @@
       </template>
     </el-dialog>
   </div>
+  <detail ref="detailRef" @change="actions.queryAll()" />
 </template>
 <script lang="ts" setup>
+import Detail from './detail.vue'
 import refTable from '@/public/basic-table'
 import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
@@ -167,27 +134,11 @@ onMounted(() => {
 tb.list = [
   {
     id: 1,
-    name: '计算机学院',
-    content: '计算机科学与技术',
+
+    remark: '跑步10分钟',
     participants: '张三, 李四',
     isBan: false,
     createdAt: '2025-02-19 10:00:00'
-  },
-  {
-    id: 2,
-    name: '法学院',
-    content: '法律专业',
-    participants: '王五, 赵六',
-    isBan: true,
-    createdAt: '2025-02-18 09:30:00'
-  },
-  {
-    id: 3,
-    name: '机械工程学院',
-    content: '机械工程与自动化',
-    participants: '刘七, 陈八',
-    isBan: false,
-    createdAt: '2025-02-17 14:15:00'
   }
 ]
 
@@ -198,11 +149,16 @@ const getBindUserList = async () => {
   })
   bindUserOptions.value = res.data
 }
+
+const detailRef = ref(null)
+const openDetail = (row: LabModel) => {
+  detailRef.value.showModal(row)
+}
 </script>
 <style lang="scss" scoped>
 .dialog-footer {
   display: flex;
-  justify-content: space-evenly;
+  justify-remark: space-evenly;
   margin: 20px 0;
 }
 </style>
