@@ -82,7 +82,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="journeyStarted" label="是否解锁当日挑战内容" align="center">
+      <el-table-column prop="journeyStarted" label="是否解锁当日任务内容" align="center">
+        <template #default="scope">
+          <el-switch v-model="scope.row.journeyStarted" disabled></el-switch>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="journeyStarted" label="是否展示健康教育视频" align="center">
         <template #default="scope">
           <el-switch v-model="scope.row.journeyStarted" disabled></el-switch>
         </template>
@@ -137,7 +143,7 @@ import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import Group from './group.vue'
-import Detail from '../../../public-weekChange/pages/detail.vue'
+import Detail from '../../../public-dailyLearn/pages/detail.vue'
 import refTable from '@/public/basic-table'
 import UserQuery, { UserModel, UserQueryParmas } from '../../api/user'
 import { qiniuUrl } from '@/config/qiniu'

@@ -68,23 +68,12 @@
         label-position="left"
         label-width="110px"
         style="width: 600px; margin-left: 50px">
-        <el-form-item label="每周挑战内容" prop="name">
-          <el-input v-model="tb.row.name" clearable placeholder="请输入房间名称" />
-        </el-form-item>
-        <div style="margin: 40px 0"></div>
-
         <el-form-item label="内容" prop="remark">
           <el-input type="textarea" v-model="tb.row.remark" clearable placeholder="请输入房间" :rows="4" />
         </el-form-item>
 
-        <div style="margin: 40px 0"></div>
-        <el-form-item label="显示日期" prop="expireDate" style="width: 100%">
-          <el-date-picker
-            v-model="tb.row.expireDate"
-            type="datetime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            placeholder="请选择时间"
-            format="YYYY-MM-DD HH:mm:ss" />
+        <el-form-item label="顺序" prop="remark">
+          <el-input type="number" v-model="tb.row.step" clearable placeholder="请输入顺序" />
         </el-form-item>
       </el-form>
 
@@ -109,7 +98,7 @@
   <detail ref="detailRef" @change="actions.queryAll()" />
 </template>
 <script lang="ts" setup>
-import Detail from './detail.vue'
+import Detail from '../../public-dailyLearn/pages/detail.vue'
 import refTable from '@/public/basic-table'
 import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
@@ -141,6 +130,15 @@ tb.list = [
     createdAt: '2025-02-19 10:00:00'
   }
 ]
+
+const pickerOptions = {
+  firstDayOfWeek: 1, // Monday as first day of week
+  disabledDate(time: Date) {
+    // Disable dates that don't align with week boundaries (Monday to Sunday)
+    const day = time.getDay()
+    return day !== 1 // Only allow Mondays
+  }
+}
 
 const getBindUserList = async () => {
   const res = await request({

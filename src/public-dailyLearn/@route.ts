@@ -10,7 +10,7 @@ export const dailyLearningRoutes: AppRouteRecordRaw[] = [
     redirect: '/daily-learning/content',
     name: 'DailyLearning',
     meta: {
-      title: '学习内容',
+      title: '健康教育内容',
       icon: AntIcon.coffee,
       alwaysInRoles: true
     },
@@ -20,7 +20,7 @@ export const dailyLearningRoutes: AppRouteRecordRaw[] = [
         component: () => defineAsyncCP(() => import('@/public-dailyLearn/pages/daily-learning.vue')),
         name: 'dailyLearningContent',
         meta: {
-          title: '学习内容列表',
+          title: '健康教育内容列表',
           icon: AntIcon.antDesign,
           noCache: true,
           alwaysInRoles: true

@@ -10,7 +10,7 @@ export const dailyExerciseRoutes: AppRouteRecordRaw[] = [
     redirect: '/daily-exercise/tasks',
     name: 'DailyExercise',
     meta: {
-      title: '每日运动任务',
+      title: '运动任务列表',
       icon: AntIcon.coffee,
       alwaysInRoles: true
     },

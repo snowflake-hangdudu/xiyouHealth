@@ -30,9 +30,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="content" label="内容" align="center">
+      <el-table-column prop="content" label="任务内容" align="center">
         <template #default="scope">
           {{ scope.row.content }}
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="content" label="展示该任务人员" align="center">
+        <template #default="scope">
+          {{ scope.row.peopleInfo }}
         </template>
       </el-table-column>
 
@@ -89,7 +95,7 @@
     </div>
 
     <!-- 添加/删除数据的弹窗 -->
-    <el-dialog v-model="tb.addDialogVisible" :title="actions.dialogTitle" width="620px" @closed="tb.isNew = false">
+    <el-dialog v-model="tb.addDialogVisible" title="编辑任务" width="620px" @closed="tb.isNew = false">
       <el-form
         ref="editPwdRef"
         v-if="tb.addDialogVisible"
@@ -99,14 +105,17 @@
         label-position="left"
         label-width="100px"
         style="width: 400px; margin-left: 50px">
-        <el-form-item label="任务标题" prop="name">
-          <el-input v-model="tb.row.name" clearable placeholder="请输入账号" />
-        </el-form-item>
         <el-form-item label="任务内容" prop="content">
           <el-input v-model="tb.row.content" clearable placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="上/下架" prop="isBan">
           <el-switch v-model="tb.row.isBan" />
+        </el-form-item>
+
+        <el-form-item v-model="tb.row.userList" prop="userList" label="展示该任务人员" style="width: 100%">
+          <el-select v-model="tb.row.userList" multiple clearable filterable placeholder="请选择用户">
+            <el-option v-for="item in userOptions" :key="item.id" :label="item.name" :value="item.id" />
+          </el-select>
         </el-form-item>
         <el-form-item label="显示日期" prop="expireDate" style="width: 100%">
           <el-date-picker
@@ -136,7 +145,7 @@
 </template>
 
 <script lang="ts" setup>
-import Detail from '../../public-weekChange/pages/detail.vue'
+import Detail from '../../public-dailyEx/pages/detail.vue'
 import refTable from '@/public/basic-table'
 import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
@@ -160,7 +169,8 @@ tb.list = [
     content: '跑步10分钟随机拍照',
     participants: '张三, 李四',
     isBan: false,
-    createdAt: '2025-02-19 10:00:00'
+    createdAt: '2025-02-19 10:00:00',
+    peopleInfo: '张三, 李四'
   },
   {
     id: 2,
@@ -168,7 +178,8 @@ tb.list = [
     content: '跑步20分钟随机拍照',
     participants: '王五, 赵六',
     isBan: true,
-    createdAt: '2025-02-18 09:30:00'
+    createdAt: '2025-02-18 09:30:00',
+    peopleInfo: '王五, 赵六'
   },
   {
     id: 3,
@@ -176,8 +187,18 @@ tb.list = [
     content: '跑步30分钟随机拍照',
     participants: '刘七, 陈八',
     isBan: false,
-    createdAt: '2025-02-17 14:15:00'
+    createdAt: '2025-02-17 14:15:00',
+    peopleInfo: '刘七, 陈八'
   }
+]
+
+const userOptions = [
+  { id: 1, name: '张三' },
+  { id: 2, name: '李四' },
+  { id: 3, name: '王五' },
+  { id: 4, name: '赵六' },
+  { id: 5, name: '刘七' },
+  { id: 6, name: '陈八' }
 ]
 
 const detailRef = ref<any>(null)
