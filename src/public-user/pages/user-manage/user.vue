@@ -108,7 +108,7 @@
 
       <el-table-column prop="totalPoints" label="累计难数" align="center">
         <template #default="scope">
-          {{ scope.row.totalPoints }}
+          {{ scope.row.totalDifficulties }}
         </template>
       </el-table-column>
 
@@ -164,7 +164,8 @@ tb.list = [
     hasPassword: true,
     journeyStarted: true,
     hasWeeklyChallenge: false,
-    totalPoints: 150
+    totalPoints: 150,
+    totalDifficulties: 81
   }
 ]
 

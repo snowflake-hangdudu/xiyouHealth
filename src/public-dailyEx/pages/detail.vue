@@ -34,6 +34,14 @@
           </template>
         </el-table-column>
 
+        <el-table-column prop="status" label="任务状态" align="center">
+          <template #default="scope">
+            <el-tag :type="getStatusType(scope.row.status)" effect="light">
+              {{ getStatusText(scope.row.status) }}
+            </el-tag>
+          </template>
+        </el-table-column>
+
         <el-table-column prop="email" label="上传的任务图片" align="center">
           <template #default="scope">
             <el-image :src="scope.row.email" fit="cover" />
@@ -108,9 +116,7 @@ const LabList = ref<LabModel[]>([
     isConnect: true,
     email: '跑步10分钟',
     qus: '跑步10分钟随机拍照',
-    que: true,
-    ans: true,
-    res: true
+    status: 'inProgress'
   },
   {
     id: 2,
@@ -119,9 +125,7 @@ const LabList = ref<LabModel[]>([
     isConnect: false,
     email: '跑步10分钟',
     qus: '跑步10分钟随机拍照',
-    que: true,
-    ans: true,
-    res: false
+    status: 'completed'
   }
 ])
 const getList = async () => {
@@ -133,6 +137,30 @@ const getList = async () => {
     LabList.value = res.data
   } catch (error) {
     ElMessage.error('获取信息失败')
+  }
+}
+
+const getStatusType = (status: string): string => {
+  switch (status) {
+    case 'inProgress':
+      return 'warning'
+    case 'completed':
+      return 'success'
+
+    default:
+      return ''
+  }
+}
+
+const getStatusText = (status: string): string => {
+  switch (status) {
+    case 'inProgress':
+      return '开启任务'
+    case 'completed':
+      return '完成任务'
+
+    default:
+      return '未知状态'
   }
 }
 

@@ -26,13 +26,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="mobile" label="开启该周挑战的人信息" align="center">
+      <el-table-column prop="remark" label="顺序" align="center">
         <template #default="scope: ElTableRow<LabModel>">
-          <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
+          {{ scope.row.step }}
         </template>
       </el-table-column>
 
-      <el-table-column prop="deviceCount" label="完成该周挑战人信息（包含上传的图片）" align="center">
+      <el-table-column prop="mobile" label="周挑战人员信息" align="center">
         <template #default="scope: ElTableRow<LabModel>">
           <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
         </template>
@@ -68,7 +68,7 @@
         label-position="left"
         label-width="110px"
         style="width: 600px; margin-left: 50px">
-        <el-form-item label="内容" prop="remark">
+        <el-form-item label="挑战内容" prop="remark">
           <el-input type="textarea" v-model="tb.row.remark" clearable placeholder="请输入房间" :rows="4" />
         </el-form-item>
 
@@ -98,7 +98,7 @@
   <detail ref="detailRef" @change="actions.queryAll()" />
 </template>
 <script lang="ts" setup>
-import Detail from '../../public-dailyLearn/pages/detail.vue'
+import Detail from '../../public-weekChange/pages/detail.vue'
 import refTable from '@/public/basic-table'
 import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
@@ -123,22 +123,13 @@ onMounted(() => {
 tb.list = [
   {
     id: 1,
-
+    step: '第1周',
     remark: '跑步10分钟',
     participants: '张三, 李四',
     isBan: false,
     createdAt: '2025-02-19 10:00:00'
   }
 ]
-
-const pickerOptions = {
-  firstDayOfWeek: 1, // Monday as first day of week
-  disabledDate(time: Date) {
-    // Disable dates that don't align with week boundaries (Monday to Sunday)
-    const day = time.getDay()
-    return day !== 1 // Only allow Mondays
-  }
-}
 
 const getBindUserList = async () => {
   const res = await request({

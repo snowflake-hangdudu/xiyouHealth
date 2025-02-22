@@ -28,14 +28,24 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="email" label="每周挑战" align="center">
+        <el-table-column prop="email" label="每周挑战内容" align="center">
           <template #default="scope">
             {{ scope.row.email }}
           </template>
         </el-table-column>
 
-        <el-table-column label="挑战完成图片(需图片，数组形式)" align="center">
-          <template #default="scope"></template>
+        <el-table-column prop="status" label="挑战状态" align="center">
+          <template #default="scope">
+            <el-tag :type="getStatusType(scope.row.status)" effect="light">
+              {{ getStatusText(scope.row.status) }}
+            </el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="email" label="挑战完成图片" align="center">
+          <template #default="scope">
+            <el-image :src="qiniuUrl + scope.row.email" style="max-width: 100px; max-height: 100px"></el-image>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -105,7 +115,8 @@ const LabList = ref<LabModel[]>([
     phone: '1234567890',
     isConnect: true,
     email: '跑步10分钟',
-    que: true
+    que: true,
+    status: 'inProgress'
   },
   {
     id: 2,
@@ -113,7 +124,8 @@ const LabList = ref<LabModel[]>([
     phone: '1234567890',
     isConnect: false,
     email: '跑步10分钟',
-    que: true
+    que: true,
+    status: 'completed'
   }
 ])
 const getList = async () => {
@@ -125,6 +137,30 @@ const getList = async () => {
     LabList.value = res.data
   } catch (error) {
     ElMessage.error('获取信息失败')
+  }
+}
+
+const getStatusType = (status: string): string => {
+  switch (status) {
+    case 'inProgress':
+      return 'warning'
+    case 'completed':
+      return 'success'
+
+    default:
+      return ''
+  }
+}
+
+const getStatusText = (status: string): string => {
+  switch (status) {
+    case 'inProgress':
+      return '开启任务'
+    case 'completed':
+      return '完成任务'
+
+    default:
+      return '未知状态'
   }
 }
 

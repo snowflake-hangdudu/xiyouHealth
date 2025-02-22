@@ -42,13 +42,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="participants" label="开启任务人员信息" align="center">
-        <template #default="scope">
-          <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
-        </template>
-      </el-table-column>
-
-      <el-table-column prop="participants" label="完成任务人员信息" align="center">
+      <el-table-column prop="participants" label="任务人员信息" align="center">
         <template #default="scope">
           <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
         </template>
