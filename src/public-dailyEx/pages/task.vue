@@ -30,12 +30,6 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="name" label="任务标题" align="center">
-        <template #default="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
-
       <el-table-column prop="content" label="内容" align="center">
         <template #default="scope">
           {{ scope.row.content }}

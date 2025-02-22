@@ -31,7 +31,7 @@
       <!-- Content Column -->
       <el-table-column prop="content" label="内容(视频)" align="center">
         <template #default="scope">
-          {{ scope.row.content }}
+          <el-image :src="scope.row.content" fit="cover" />
         </template>
       </el-table-column>
 
@@ -41,9 +41,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="content" label="答案" align="center">
+      <el-table-column prop="content" label="回答" align="center">
         <template #default="scope">
-          <el-switch v-model="scope.row.isOnline"></el-switch>
+          {{ scope.row.ans ? ' 是' : ' 否 ' }}
         </template>
       </el-table-column>
 
