@@ -11,6 +11,9 @@
         <template #prepend>任务任务标题</template>
       </el-input>
 
+      <div class="filter-label">是否开启室内任务</div>
+      <el-switch v-model="tb.query.isInside" class="filter-item" />
+
       <div style="display: flex; flex: 1; justify-content: flex-end">
         <el-button class="filter-item" type="primary" :icon="Plus" @click="actions.add()">新建运动任务</el-button>
       </div>
@@ -36,7 +39,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="content" label="展示该任务人员" align="center">
+      <el-table-column prop="content" label="绑定该任务人员" align="center">
         <template #default="scope">
           {{ scope.row.peopleInfo }}
         </template>
@@ -59,12 +62,6 @@
                   actions.queryAll()
                 })
             " />
-        </template>
-      </el-table-column>
-
-      <el-table-column prop="createdAt" label="显示日期" align="center">
-        <template #default="scope">
-          {{ scope.row.createdAt }}
         </template>
       </el-table-column>
 
@@ -102,22 +99,14 @@
         <el-form-item label="任务内容" prop="content">
           <el-input v-model="tb.row.content" clearable placeholder="请输入内容" />
         </el-form-item>
+
         <el-form-item label="上/下架" prop="isBan">
           <el-switch v-model="tb.row.isBan" />
         </el-form-item>
-
-        <el-form-item v-model="tb.row.userList" prop="userList" label="展示该任务人员" style="width: 100%">
-          <el-select v-model="tb.row.userList" multiple clearable filterable placeholder="请选择用户">
-            <el-option v-for="item in userOptions" :key="item.id" :label="item.name" :value="item.id" />
+        <el-form-item label="任务类型" prop="participants">
+          <el-select v-model="tb.row.participants" placeholder="请选择任务类型">
+            <el-option v-for="item in particiOptions" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
-        </el-form-item>
-        <el-form-item label="显示日期" prop="expireDate" style="width: 100%">
-          <el-date-picker
-            v-model="tb.row.expireDate"
-            type="datetime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            placeholder="请选择时间"
-            format="YYYY-MM-DD HH:mm:ss" />
         </el-form-item>
       </el-form>
 
@@ -193,6 +182,11 @@ const userOptions = [
   { id: 4, name: '赵六' },
   { id: 5, name: '刘七' },
   { id: 6, name: '陈八' }
+]
+
+const particiOptions = [
+  { id: 1, name: '室内运动' },
+  { id: 2, name: '室外运动' }
 ]
 
 const detailRef = ref<any>(null)

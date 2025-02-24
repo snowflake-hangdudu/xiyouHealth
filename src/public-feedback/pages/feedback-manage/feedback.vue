@@ -46,12 +46,6 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="content" label="意见反馈图片" align="center" min-width="200">
-        <template #default="scope">
-          <el-image :src="scope.row.content" style="width: 100px; height: 100px; object-fit: cover" :preview-src-list="[scope.row.content]" />
-        </template>
-      </el-table-column>
-
       <el-table-column prop="userInfo" label="反馈人信息" align="center" width="200">
         <template #default="scope">
           {{ scope.row.userInfo }}

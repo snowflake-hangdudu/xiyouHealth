@@ -115,8 +115,7 @@
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button @click="openGroup(scope.row)" link type="primary">组队</el-button>
-          <el-button @click="openRemark(scope.row)" link type="primary">关联健康报告</el-button>
-          <el-button @click="openRemark(scope.row)" link type="primary">关联运动处方</el-button>
+          <el-button @click="openTask(scope.row)" link type="primary">关联任务</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -136,6 +135,8 @@
   </div>
   <!-- 备注弹窗 -->
   <Group ref="groupRef" @close="actions.queryAll()" />
+  <!-- 任务关联弹窗 -->
+  <Task ref="taskRef" @close="actions.queryAll()" />
 </template>
 
 <script lang="ts" setup>
@@ -143,7 +144,8 @@ import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import Group from './group.vue'
-import Detail from '../../../public-dailyLearn/pages/detail.vue'
+import Task from './task.vue'
+
 import refTable from '@/public/basic-table'
 import UserQuery, { UserModel, UserQueryParmas } from '../../api/user'
 import { qiniuUrl } from '@/config/qiniu'
@@ -170,13 +172,13 @@ tb.list = [
 ]
 
 const groupRef = ref<any>(null)
+const taskRef = ref<any>(null)
 
-const detailRef = ref<any>(null)
 const openGroup = (row: UserModel) => {
   groupRef.value.showModal(row)
 }
 
-const openDetail = (row: UserModel) => {
-  detailRef.value.showModal(row)
+const openTask = (row: UserModel) => {
+  taskRef.value.showModal(row)
 }
 </script>

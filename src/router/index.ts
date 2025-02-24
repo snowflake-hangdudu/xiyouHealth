@@ -14,11 +14,11 @@ export const asyncRouters: AppRouteRecordRaw[] = [
   ...moduleRouters.dailyExerciseRoutes,
   ...moduleRouters.weeklyChallengRoutes,
   ...moduleRouters.achievementRoutes,
-  ...moduleRouters.healthReportRoutes,
-  ...moduleRouters.exercisePrescriptionRoutes,
+  // ...moduleRouters.healthReportRoutes,
+  // ...moduleRouters.exercisePrescriptionRoutes,
   ...moduleRouters.exchangeMallRoutes,
   ...moduleRouters.feedbackRoutes,
-  ...moduleRouters.accountRoutes,
+  // ...moduleRouters.accountRoutes,
   ...(env.VITE_DEBUG_ROUTERS === 'true' ? constantRouters.debugRoutes : [])
 ]
 

@@ -36,15 +36,28 @@
       <!-- 用户账号列 -->
       <el-table-column prop="userPhone" label="用户手机号" align="center" />
 
+      <el-table-column prop="taskDays" label="当日步数" align="center">
+        <template #default="scope">
+          <span>{{ scope.row.steps }}</span>
+        </template>
+      </el-table-column>
+
+      <!-- ��计步数 -->
+      <el-table-column prop="taskDays" label="累计步数" align="center">
+        <template #default="scope">
+          <span>{{ scope.row.totalSteps }}</span>
+        </template>
+      </el-table-column>
+
       <!-- 完成任务天数 -->
-      <el-table-column prop="taskDays" label="完成任务天数" align="center">
+      <el-table-column prop="taskDays" label="完成任务次数" align="center">
         <template #default="scope">
           <span>{{ scope.row.taskDays }} 天</span>
         </template>
       </el-table-column>
 
       <!-- 完成每周挑战天数 -->
-      <el-table-column prop="challengeDays" label="完成每周挑战天数" align="center">
+      <el-table-column prop="challengeDays" label="完成每周挑战次数" align="center">
         <template #default="scope">
           <span>{{ scope.row.challengeDays }} 天</span>
         </template>
@@ -77,6 +90,13 @@
           </div>
         </template>
       </el-table-column>
+
+      <!-- ��作列 -->
+      <el-table-column label="操作" align="center" width="150" fixed="right">
+        <template #default="scope">
+          <el-button type="text" @click="() => openStep()">上传每日步数</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <!-- 翻页 -->
@@ -92,9 +112,12 @@
         @current-change="(v: number) => actions.pageChange(v)" />
     </div>
   </div>
+  <!-- 编辑对话框 -->
+  <Step @close="actions.queryAll()" ref="stepRef"></Step>
 </template>
 
 <script lang="ts" setup>
+import Step from './steps.vue'
 import refTable from '@/public/basic-table'
 import { ref, onMounted } from 'vue'
 import TopicQuery, { TopicModel, TopicQueryParmas } from '../api/topic'
@@ -128,7 +151,9 @@ tb.list = [
       { day: '周五', type: '完成每周挑战', points: 20 },
       { day: '周六', type: '均完成任务', points: 10 },
       { day: '周日', type: '均完成任务', points: 10 }
-    ]
+    ],
+    steps: 3000,
+    totalSteps: 4500
   },
   {
     id: 2,
@@ -144,7 +169,9 @@ tb.list = [
       { day: '周五', type: '组队队友未完成任务', points: -10 },
       { day: '周六', type: '完成每周挑战', points: 20 },
       { day: '周日', type: '均完成任务', points: 10 }
-    ]
+    ],
+    steps: 1000,
+    totalSteps: 1500
   },
   {
     id: 3,
@@ -160,7 +187,9 @@ tb.list = [
       { day: '周五', type: '均完成任务', points: 10 },
       { day: '周六', type: '自己没有完成任务', points: -10 },
       { day: '周日', type: '组队队友未完成任务', points: -10 }
-    ]
+    ],
+    steps: 2000,
+    totalSteps: 2500
   },
   {
     id: 4,
@@ -176,7 +205,9 @@ tb.list = [
       { day: '周五', type: '完成每周挑战', points: 20 },
       { day: '周六', type: '均完成任务', points: 10 },
       { day: '周日', type: '均完成任务', points: 10 }
-    ]
+    ],
+    steps: 1000,
+    totalSteps: 1500
   },
   {
     id: 5,
@@ -192,12 +223,19 @@ tb.list = [
       { day: '周五', type: '均完成任务', points: 10 },
       { day: '周六', type: '均完成任务', points: 10 },
       { day: '周日', type: '均完成任务', points: 10 }
-    ]
+    ],
+    steps: 2000,
+    totalSteps: 1500
   }
 ]
 
 const getTotalPoints = (pointsChange: any[]) => {
   return pointsChange.reduce((total, change) => total + change.points, 0)
+}
+
+const stepRef = ref(null)
+const openStep = () => {
+  stepRef.value?.showModal()
 }
 
 tb.total = tb.list.length

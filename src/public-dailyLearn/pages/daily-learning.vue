@@ -99,7 +99,7 @@
       label-position="left"
       label-width="100px"
       style="width: 400px; margin-left: 50px">
-      <el-form-item label="健康教育内容标题" prop="title">
+      <el-form-item label="标题" prop="title">
         <el-input v-model="tb.row.title" clearable placeholder="请输入标题" />
       </el-form-item>
 

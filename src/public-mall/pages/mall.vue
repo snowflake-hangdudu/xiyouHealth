@@ -54,6 +54,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column prop="count" label="剩余数量" align="center">
+        <template #default="scope">
+          {{ scope.row.count }}
+        </template>
+      </el-table-column>
+
       <el-table-column prop="isOnline" label="上/下架" align="center">
         <template #default="scope">
           <el-switch v-model="scope.row.isOnline" @change="handleStatusChange(scope.row)"></el-switch>
@@ -102,7 +108,10 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="所需积分" prop="points">
-          <el-input-number v-model="tb.row.points" :min="0" placeholder="请输入所需积分" />
+          <el-input-number v-model="tb.row.points" :min="0" placeholder="" style="width: 100%" />
+        </el-form-item>
+        <el-form-item label="剩余数量" prop="count">
+          <el-input-number v-model="tb.row.count" :min="0" placeholder="" style="width: 100%" />
         </el-form-item>
         <el-form-item label="上/下架" prop="isOnline">
           <el-switch v-model="tb.row.isOnline" />
@@ -141,21 +150,24 @@ onMounted(() => {
       title: '商品1',
       imageUrl: 'https://example.com/image1.jpg',
       points: 100,
-      isOnline: true
+      isOnline: true,
+      count: 1
     },
     {
       id: 2,
       title: '商品2',
       imageUrl: 'https://example.com/image2.jpg',
       points: 200,
-      isOnline: false
+      isOnline: false,
+      count: 100
     },
     {
       id: 3,
       title: '商品3',
       imageUrl: 'https://example.com/image3.jpg',
       points: 300,
-      isOnline: true
+      isOnline: true,
+      count: 1000
     }
   ]
   tb.total = tb.list.length
