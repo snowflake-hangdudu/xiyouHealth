@@ -3,7 +3,7 @@
     <div class="filter-container-flex">
       <el-button class="filter-item" type="primary" :icon="Plus" @click="actions.add()">添加</el-button>
     </div>
-    <el-table v-loading="tb.listLoading" :data="tb.list" element-loading-text="Loading" border fit highlight-current-row>
+    <el-table :data="tb.list" element-loading-text="Loading" border fit highlight-current-row>
       <!-- 内容 -->
 
       <!-- 操作 -->

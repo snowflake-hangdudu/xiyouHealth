@@ -15,7 +15,7 @@
         <el-option :key="4" label="失效" :value="4" />
       </el-select>
     </div>
-    <el-table v-loading="tb.listLoading" :data="tb.list" element-loading-text="Loading" border fit highlight-current-row>
+    <el-table :data="tb.list" element-loading-text="Loading" border fit highlight-current-row>
       <!-- 内容 -->
       <el-table-column label="ID" align="center" width="110">
         <template #default="scope: ElTableRow<ApplyModel>">

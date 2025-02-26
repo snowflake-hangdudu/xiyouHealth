@@ -64,15 +64,7 @@
         </div>
       </div>
     </div>
-    <el-table
-      class="table"
-      table-layout="auto"
-      v-loading="tb.listLoading"
-      :data="tb.list"
-      element-loading-text="Loading"
-      border
-      fit
-      highlight-current-row>
+    <el-table class="table" table-layout="auto" :data="tb.list" element-loading-text="Loading" border fit highlight-current-row>
       <!-- 内容 -->
       <el-table-column label="ID" align="center">
         <template #default="scope: ElTableRow<AccountModel>">

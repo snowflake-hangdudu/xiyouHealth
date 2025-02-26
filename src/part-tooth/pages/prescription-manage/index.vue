@@ -15,7 +15,7 @@
         <el-option :key="3" label="已拒绝" :value="3" />
       </el-select>
     </div>
-    <el-table v-loading="tb.listLoading" :data="tb.list" element-loading-text="Loading" border fit highlight-current-row>
+    <el-table :data="tb.list" element-loading-text="Loading" border fit highlight-current-row>
       <!-- 内容 -->
       <el-table-column label="ID" align="center" width="100">
         <template #default="scope: ElTableRow<PrescriptionModel>">

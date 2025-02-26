@@ -1,15 +1,7 @@
 <template>
   <el-dialog width="900px" ref="dialog" v-model="open" @close="close">
     <div class="all-container">
-      <el-table
-        v-loading="tb.listLoading"
-        :data="LabList"
-        element-loading-text="Loading"
-        fit
-        highlight-current-row
-        border
-        align="center"
-        style="width: 100%; overflow-x: auto">
+      <el-table :data="LabList" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
         <el-table-column prop="id" label="用户ID" align="center">
           <template #default="scope">
             {{ scope.row.id }}

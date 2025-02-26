@@ -58,15 +58,7 @@
       </div>
     </div>
 
-    <el-table
-      v-loading="tb.listLoading"
-      :data="tb.list"
-      element-loading-text="Loading"
-      fit
-      highlight-current-row
-      border
-      align="center"
-      style="width: 100%; overflow-x: auto">
+    <el-table :data="tb.list" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
       <el-table-column prop="id" label="ID" align="center">
         <template #default="scope: ElTableRow<BookModel>">
           {{ scope.row.id }}

@@ -21,15 +21,7 @@
         <template #prepend>手机号</template>
       </el-input>
     </div>
-    <el-table
-      v-loading="tb.listLoading"
-      :data="tb.list"
-      element-loading-text="Loading"
-      fit
-      highlight-current-row
-      border
-      align="center"
-      style="width: 100%; overflow-x: auto">
+    <el-table :data="tb.list" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
       <el-table-column prop="id" label="用户ID" align="center">
         <template #default="scope">
           {{ scope.row.id }}

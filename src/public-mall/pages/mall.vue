@@ -25,15 +25,7 @@
         <el-button class="filter-item" type="primary" :icon="Plus" @click="actions.add()">添加商品</el-button>
       </div>
     </div>
-    <el-table
-      v-loading="tb.listLoading"
-      :data="tb.list"
-      element-loading-text="Loading"
-      fit
-      highlight-current-row
-      border
-      align="center"
-      style="width: 100%; overflow-x: auto">
+    <el-table :data="tb.list" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
       <el-table-column prop="id" label="ID" align="center" width="80" />
 
       <el-table-column prop="title" label="商品名" align="center">

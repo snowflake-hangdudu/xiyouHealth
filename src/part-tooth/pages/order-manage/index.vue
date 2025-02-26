@@ -43,7 +43,7 @@
         <el-option v-for="item in storeTb.list" :key="item.id" :label="`${item.storeName}`" :value="item.id!" />
       </el-select>
     </div>
-    <el-table v-loading="tb.listLoading" :data="tb.list" element-loading-text="Loading" border fit highlight-current-row>
+    <el-table :data="tb.list" element-loading-text="Loading" border fit highlight-current-row>
       <!-- 内容 -->
       <el-table-column label="ID" align="center">
         <template #default="scope: ElTableRow<OrderModel>">
