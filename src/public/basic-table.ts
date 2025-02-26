@@ -233,7 +233,7 @@ class BasicTable<T, E extends BasicQueryParams, F extends Queryable<T, E>> {
       console.log('查询数据:', this.v.list)
     } catch (error) {
       console.error(error)
-      // this.notifyError('查询失败', '查询数据时发生错误')
+      this.notifyError('查询失败', '查询数据时发生错误')
       this.v.listLoading = false
     }
     this.v.listLoading = false
