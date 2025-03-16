@@ -27,8 +27,7 @@ export const usePermissionStore = defineStore('permission', {
       return new Promise<void>((resolve) => {
         // 获取全部生成的路由
         const routers = route.getRoutes()
-        //过滤后的一级路由 routers,暂时不用
-
+   
         this.isHasInitRouters = true
         // 生成动态路由左侧菜单
         this.leftBarRoutersMap = filterRouters(asyncRouters, routers as AppRouteRecordRaw[])

@@ -1,127 +1,92 @@
 import Queryable, { BasicQueryParams } from '@/public/queryable'
 import http from '@/config/axios'
-import { id } from 'element-plus/es/locale';
 const { request } = http
 
-/** 模型 */
+/** 用户对象模型 */
 export interface UserModel {
-  collegeId?: number; // 学院id
-  createdAt?: string; // 创建时间
-  deleted?: boolean; // 是否删除 true 删除 false 不删除
-  failReason?: string; // 审核失败原因
-  id?: number; // id
-  idCard?: string; // 身份证号
-  isBan?: boolean; // 是否禁用 true 禁用
-  name?: string; // 姓名
-  password?: string; // 密码
-  phone?: string; // 手机号
-  remark?: string; // 备注
-  role?: 'college' | 'school' | 'after_school'; // 角色 college 院内用户 school 校内院外用户 after_school 校外用户
-  schoolCardUrl?: string; // 校园卡url
-  status?: 'un_check' | 'success' | 'fail'; // 审核状态 un_check 待审核 success 审核成功 fail 审核失败
-  updatedAt?: string; // 更新时间
+avatar?: string; // 头像
+createdAt?: string; // 创建时间
+deleted?: boolean; // 是否删除
+id?: number;
+isChallenge?: boolean; // 周挑战资格
+isJourney?: boolean; // 旅程状态
+isShowVideo?: boolean; // 视频展示
+isTeam?: boolean; // 组队状态
+isUnlockTask?: boolean; // 任务解锁
+name?: string; // 姓名
+password?: string;
+phone?: string; // 手机号
+totalCheckPoint?: number; // 累计难数
+totalPoint?: number; // 累计积分
+updatedAt?: string; // 更新时间
 }
 
-/** 搜索条件 */
-export interface UserQueryParmas extends BasicQueryParams {
-  id?: number; // id
-  phone?: string; // 手机号
-  role?: 'college' | 'school' | 'after_school'; // 角色 college 院内用户 school 校内院外用户 after_school 校外用户
-  status?: 'un_check' | 'success' | 'fail'; // 审核状态 un_check 待审核 success 审核成功 fail 审核失败
-
+/** 查询参数 */
+export interface UserQueryParams extends BasicQueryParams {
+name?: string; // 姓名查询
+phone?: string; // 手机号查询
 }
 
-/** 数据源，增删查改等请求 */
-export default class UserQuery extends Queryable<UserModel, UserQueryParmas> {
-  // 可设置父ID，例如查询用户下的全部文章
-  // constructor(id) {
-  //     super();
-  //     this.id = id;
-  // }
+/** 用户数据源类 */
+export default class UserQuery extends Queryable<UserModel, UserQueryParams> {
+// 基础配置
+get objectName(): string {
+return '用户'
+}
 
-  /** 对象名称 */
-  get objectName(): string {
-    return '用户'
-  }
+get defaultObject(): Partial<UserModel> {
+return {
+isChallenge: false,
+isJourney: false,
+isShowVideo: true,
+isTeam: false,
+isUnlockTask: false
+}
+}
 
-  // 默认的内容
-  get defaultObject():  Partial<UserModel> {
-    return {
-   
-      
-    }
-  }
+_valueGetter: () => Partial<UserModel> = () => ({})
 
-  // 读取正在输入的数据，用于表单校验
-  _valueGetter: () => Partial<UserModel> = () => ({})
+get currentEditRow(): Partial<UserModel> {
+return this._valueGetter()
+}
 
-  // 已输入的数据的Getter
-  get currentEditRow(): Partial<UserModel> {
-    return this._valueGetter()
-  }
+// 校验规则
+get rules() {
+return {
+name: [{ required: true, message: '请输入姓名' }],
+phone: [
+{ required: true, message: '请输入手机号' },
+{ pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确' }
+]
+}
+}
 
-  // 表单规则
-  get rules() {
-    return {}
-  }
+/** 分页查询 */
+async all(params: UserQueryParams) {
+try {
+const res = await request({
+url: 'api/admin/user/get/page',
+method: 'get',
+params: {
+pageNum: params.pageNum || 1,
+pageSize: params.pageSize || 10,
+name: params.name || null,
+phone: params.phone || null
+}
+})
 
-  // 查询全部
-  async all(params: UserQueryParmas) {
-    console.log("查询全部", params);
-    let res = await request({
-      url: `/api/admin/student/get/page`,
-      method: 'get',
-      params: {
-        pageNum: params.pageNum,
-        pageSize: params.pageSize,
-        id: params.id || null,
-        phone: params.phone || null,
-        role: params.role || null,
-        status: params.status || null,
-   
-      }
-    })
-    if (res.data.count == undefined) return res.data
-    return {
-      data: res.data.rows,
-      total: res.data.count
-    }
-  }
+if (res.data?.code !== 0) {
+throw new Error(res.data?.msg || '请求失败')
+}
 
-  // 上下架
-  async changeOnline(obj: UserModel) {
-    console.log("修改", obj);
-    obj = Object.assign({}, obj);
-    let id = obj.id;
-    delete obj.id;
-    return request({
-      url: `api/admin/student/online/${id}`,
-      method: "put",
-     
-    });
-  }
+return {
+data: res.data.data?.rows || [],
+total: res.data.data?.count || 0
+}
+} catch (error) {
+console.error('[UserQuery] 分页查询失败:', error)
+throw new Error()
+}
+}
 
-  // 上下架
-  async changeRemark(obj: UserModel) {
-    console.log("修改", obj);
-    obj = Object.assign({}, obj);
-    let id = obj.id;
-    delete obj.id;
-    return request({
-      url: `api/admin/student/online/${id}`,
-      method: "put",
-      data:{
-        remark:obj.remark || null
-      }
-     
-    });
-  }
-
-  // // 通过id删除
-  // async deleteObj(obj: UserModel) {
-  //   return request({
-  //     url: `/api/hospital/User/${obj.id}`,
-  //     method: "delete",
-  //   });
-  // }
 }

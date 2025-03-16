@@ -13,7 +13,7 @@
                   :key="item.id"
                   :label="item.name + (item.isConnect ? '(已关联)' : '')"
                   :value="item.id"
-                  :disabled="item.isConnect"></el-option>
+                ></el-option>
               </el-select>
             </span>
           </div>
@@ -47,7 +47,6 @@ const userId = ref<number | null>(1) // 用户ID
 const showModal = (row: UserModel) => {
   if (row.id) {
     id.value = row.id
-
     open.value = true
   } else {
     ElMessage.error('获取信息失败')
@@ -55,26 +54,34 @@ const showModal = (row: UserModel) => {
 }
 
 const savemsg = async () => {
-  if (!msg.value) {
-    ElMessage.error('请输入消息')
-    return
-  }
   try {
+    // 使用 ElMessageBox.confirm 替代 elconfirm
+    await ElMessageBox.confirm('是否确定关联用户？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    });
+
+    // 用户确认后执行
     await request({
-      url: `api/admin/message/insert`,
+      url: `api/admin/team`,
       method: 'POST',
       data: {
-        msg: msg.value || null,
-        receiveId: id.value,
-        receiveType: 'student'
+        user1Id: id.value,
+        user2Id: userId.value
       }
-    })
-    ElMessage.success('消息发送成功')
-    open.value = false
+    });
+    
+    ElMessage.success('关联成功');
+    open.value = false;
   } catch (error) {
-    ElMessage.error('消息发送失败')
+    // 如果用户点击取消或请求失败，都会进入 catch
+    if (error !== 'cancel') { // 通过错误类型区分是取消还是请求失败
+      ElMessage.error('关联失败');
+    }
+    open.value = false;
   }
-}
+};
 
 const userList = ref<UserModel[]>([
   {
@@ -93,8 +100,12 @@ const userList = ref<UserModel[]>([
 const getList = async () => {
   try {
     const res = await request({
-      url: `api/admin/message/list`,
-      method: 'GET'
+      url: `api/admin/user/get/page`,
+      method: 'GET',
+      params: {
+        pageNum: 1,
+        pageSize: 999
+      }
     })
     userList.value = res.data
   } catch (error) {
