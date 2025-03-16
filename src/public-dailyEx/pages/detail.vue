@@ -56,7 +56,7 @@ import { ref, defineExpose, computed } from 'vue'
 
 import http from '@/config/axios'
 import { qiniuUrl } from '@/config/qiniu'
-import LabQuery, { LabModel, LabQueryParmas } from '../../public-weekChange/api/lab'
+import LabQuery, { LabModel, LabQueryParmas } from '../../public-weekChange/api/challenge'
 import { ElMessage } from 'element-plus'
 import refTable from '@/public/basic-table'
 

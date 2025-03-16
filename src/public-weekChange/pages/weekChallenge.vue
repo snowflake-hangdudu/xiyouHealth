@@ -1,37 +1,39 @@
 <template>
   <div class="app-container">
     <div class="filter-container-flex" style="flex-wrap: wrap">
-      <div style="display: flex; flex: 1; justify-remark: flex-end">
+      <div style="display: flex; flex: 1; justify-content: flex-end">
         <el-button class="filter-item" type="primary" :icon="Plus" @click="actions.add()">新建每周挑战</el-button>
       </div>
     </div>
     <el-table :data="tb.list" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
       <el-table-column prop="id" label="ID" align="center">
-        <template #default="scope: ElTableRow<LabModel>">
+        <template #default="scope: ElTableRow<ChallengeModel>">
           {{ scope.row.id }}
         </template>
       </el-table-column>
 
-      <el-table-column prop="remark" label="每周挑战内容" align="center">
-        <template #default="scope: ElTableRow<LabModel>">
-          {{ scope.row.remark }}
+      <el-table-column prop="content" label="每周挑战内容" align="center">
+        <template #default="scope: ElTableRow<ChallengeModel>">
+          {{ scope.row.content }}
         </template>
       </el-table-column>
 
-      <el-table-column prop="remark" label="顺序" align="center">
-        <template #default="scope: ElTableRow<LabModel>">
-          {{ scope.row.step }}
+      <el-table-column prop="sort" label="顺序" align="center">
+        <template #default="scope: ElTableRow<ChallengeModel>">
+          {{ scope.row.sort }}
         </template>
       </el-table-column>
 
-      <el-table-column prop="mobile" label="周挑战人员信息" align="center">
-        <template #default="scope: ElTableRow<LabModel>">
+
+
+      <el-table-column  label="周挑战人员信息" align="center">
+        <template #default="scope: ElTableRow<ChallengeModel>">
           <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
         </template>
       </el-table-column>
 
       <el-table-column label="操作" align="center">
-        <template #default="scope: ElTableRow<LabModel>">
+        <template #default="scope: ElTableRow<ChallengeModel>">
           <el-button type="text" @click="actions.edit(scope.row)">编辑</el-button>
         </template>
       </el-table-column>
@@ -60,13 +62,14 @@
         label-position="left"
         label-width="110px"
         style="width: 600px; margin-left: 50px">
-        <el-form-item label="挑战内容" prop="remark">
-          <el-input type="textarea" v-model="tb.row.remark" clearable placeholder="请输入房间" :rows="4" />
+        <el-form-item label="挑战内容" prop="content">
+          <el-input type="textarea" v-model="tb.row.content" clearable placeholder="请输入挑战内容" :rows="4" />
+        </el-form-item>
+        <el-form-item label="顺序" prop="sort">
+          <el-input-number v-model="tb.row.sort" clearable placeholder="请输入顺序" />
         </el-form-item>
 
-        <el-form-item label="顺序" prop="remark">
-          <el-input type="number" v-model="tb.row.step" clearable placeholder="请输入顺序" />
-        </el-form-item>
+     
       </el-form>
 
       <template #footer>
@@ -94,7 +97,7 @@ import Detail from '../../public-weekChange/pages/detail.vue'
 import refTable from '@/public/basic-table'
 import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
-import LabQuery, { LabModel, LabQueryParmas } from '../api/lab'
+import ChallengeQuery, { ChallengeModel, ChallengeQueryParmas } from '../api/challenge'
 import http from '@/config/axios'
 import ElMessage from 'element-plus'
 import { FormInstance, FormRules } from 'element-plus'
@@ -104,42 +107,36 @@ import { onMounted } from 'vue'
 const [editPwdRef, validateEditPwdSubmit] = useValidate(ref<FormInstance>())
 
 /** 创建表格，与表格相关操作 */
-const [tb, actions] = refTable<LabModel, LabQueryParmas, LabQuery>(new LabQuery(), {}, {})
+const [tb, actions] = refTable<ChallengeModel, ChallengeQueryParmas, ChallengeQuery>(new ChallengeQuery())
 
 const bindUserOptions = ref<any[]>([])
 onMounted(() => {
-  getBindUserList()
+ 
 })
-
 // 模拟数据
 tb.list = [
   {
     id: 1,
-    step: '第1周',
-    remark: '跑步10分钟',
-    participants: '张三, 李四',
+    sort: 1,
+    content: '跑步10分钟',
     isBan: false,
     createdAt: '2025-02-19 10:00:00'
   }
 ]
 
-const getBindUserList = async () => {
-  const res = await request({
-    url: 'api/common/select/admin/list',
-    method: 'get'
-  })
-  bindUserOptions.value = res.data
-}
+
+
+
 
 const detailRef = ref(null)
-const openDetail = (row: LabModel) => {
+const openDetail = (row: ChallengeModel) => {
   detailRef.value.showModal(row)
 }
 </script>
 <style lang="scss" scoped>
 .dialog-footer {
   display: flex;
-  justify-remark: space-evenly;
+  justify-content: space-evenly;
   margin: 20px 0;
 }
 </style>

@@ -155,10 +155,6 @@ const [tb, actions] = refTable<TaskModel, TaskQueryParams, TaskQuery>(
 
 )
 
-
-
-
-
 // 模拟数据（开发时使用）
 if (import.meta.env.DEV) {
   tb.list = [
