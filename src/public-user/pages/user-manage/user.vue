@@ -10,6 +10,8 @@
         @input="actions.queryAll({ resetPage: true })">
         <template #prepend>手机号</template>
       </el-input>
+
+      
     </div>
     <el-table :data="tb.list" element-loading-text="Loading" fit highlight-current-row border align="center"
       style="width: 100%; overflow-x: auto">
@@ -75,19 +77,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="isShowVideo" label="是否展示健康教育视频" align="center">
+   
+
+      <el-table-column prop="isShowVideo" label="是否展示运动任务" align="center">
         <!-- 修改为 isShowVideo，与 UserModel 对应 -->
         <template #default="scope">
           <el-switch v-model="scope.row.isShowVideo" disabled></el-switch>
         </template>
       </el-table-column>
 
-      <el-table-column prop="isChallenge" label="是否有当前周挑战资格" align="center">
-        <!-- 修改为 isChallenge，与 UserModel 对应 -->
-        <template #default="scope">
-          <el-switch v-model="scope.row.isChallenge" disabled></el-switch>
-        </template>
-      </el-table-column>
 
       <el-table-column prop="totalPoint" label="累计积分" align="center">
         <!-- 修改为 totalPoint，与 UserModel 对应 -->
@@ -103,9 +101,18 @@
         </template>
       </el-table-column>
 
+      <el-table-column prop="isShowVideo" label="是否展示健康教育视频" align="center">
+        <!-- 修改为 isShowVideo，与 UserModel 对应 -->
+        <template #default="scope">
+          <el-switch v-model="scope.row.isShowVideo" @change="isShow(scope.row)"></el-switch>
+        </template>
+      </el-table-column>
+
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button @click="openGroup(scope.row)" link type="primary">组队</el-button>
+         
+
          
         </template>
       </el-table-column>
@@ -221,6 +228,18 @@ tb.list = tb.list.concat(mockData)
 
 const groupRef = ref<any>(null)
 const taskRef = ref<any>(null)
+
+const isShow =async (row) => {
+  await request({
+    url: `api/admin/user/video/${row.id}`,
+    method: 'post',
+  }).then((res) => {
+    ElMessage.success('操作成功')
+    actions.queryAll()
+  }).catch((err) => {
+    ElMessage.error('操作失败')
+  })
+}
 
 const openGroup = (row: UserModel) => {
   groupRef.value.showModal(row)
