@@ -25,6 +25,16 @@
         <el-option label="室内任务" value="in" />
       </el-select>
 
+      <div   class="filter-item">展示室内任务</div>
+      <el-switch
+        class="filter-item"
+      
+        v-model="open"
+        :active-value="false"
+        :inactive-value="true"
+        @change="changeType()"
+      />
+
       <div style="display: flex; flex: 1; justify-content: flex-end">
         <el-button class="filter-item" type="primary" :icon="Plus" @click="actions.add()">新建运动任务</el-button>
       </div>
@@ -118,6 +128,13 @@
        
           />
         </el-form-item>
+        <el-form-item label="绑定人" prop="list">
+          <el-select  placeholder="请选择绑定人" multiple>
+            <el-option label="用户1" value="1" />
+            <el-option label="用户2" value="2" />
+            <el-option label="用户3" value="3" />
+          </el-select>
+        </el-form-item>
       </el-form>
 
       <template #footer>
@@ -155,6 +172,8 @@ const [tb, actions] = refTable<TaskModel, TaskQueryParams, TaskQuery>(
 
 )
 
+const open=ref(false)
+
 // 模拟数据（开发时使用）
 if (import.meta.env.DEV) {
   tb.list = [
@@ -182,6 +201,21 @@ const changeOnline = async (row: TaskModel) => {
       url: `api/admin/task/online/${row.id}`,
       method: 'PUT',
   
+    })
+    ElMessage.success('操作成功')
+  } catch (error) {
+    ElMessage.error('操作失败')
+  }
+}
+
+const changeType = async () => {
+  try {
+    await request({
+      url: `api/admin/task/indoor`,
+      method: 'PUT',
+      data: {
+        open: open.value
+      }
     })
     ElMessage.success('操作成功')
   } catch (error) {

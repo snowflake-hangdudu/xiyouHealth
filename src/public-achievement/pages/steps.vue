@@ -2,14 +2,13 @@
   <el-dialog width="900px" ref="dialog" v-model="open" @close="close">
     <div class="all-container">
       <el-form
-        :disabled="tb.submitLoading"
-        :model="tb.row"
-        :rules="tb.source.rules"
+        :model="row"
+       
         label-position="left"
         label-width="100px"
         style="width: 400px; margin-left: 50px">
         <el-form-item label="上传每日步数" prop="expressName">
-          <el-input v-model="tb.row.expressName" placeholder="请输入每日步数" />
+          <el-input v-model="step" placeholder="请输入每日步数" />
         </el-form-item>
       </el-form>
     </div>
@@ -28,20 +27,20 @@ import { ref, defineExpose, computed } from 'vue'
 
 import http from '@/config/axios'
 import { qiniuUrl } from '@/config/qiniu'
-import LabQuery, { LabModel, LabQueryParmas } from '../../public-weekChange/api/challenge'
+
 import { ElMessage } from 'element-plus'
 import refTable from '@/public/basic-table'
 
 const { request } = http
 
 const open = ref(false)
-
+const row = ref<any>({})
+const step = ref<number>(0)
 const id = ref<number | null>(null) // 用户ID
 
-/** 创建表格，与表格相关操作 */
-const [tb, actions] = refTable<LabModel, LabQueryParmas, LabQuery>(new LabQuery(), {})
 
-const showModal = (row: LabModel) => {
+
+const showModal = (row: any) => {
   open.value = true
   if (row.id) {
     id.value = row.id
@@ -51,8 +50,8 @@ const showModal = (row: LabModel) => {
 }
 
 const savemsg = async () => {
-  if (!msg.value) {
-    ElMessage.error('请输入消息')
+  if (!step.value) {
+    ElMessage.error('请输入每日步数')
     return
   }
   try {
