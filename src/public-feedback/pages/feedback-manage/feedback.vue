@@ -4,11 +4,11 @@
       <el-input
         class="filter-item"
         style="width: 320px"
-        v-model="tb.query.account"
+        v-model="tb.query.name"
         clearable
         placeholder="请输入反馈人姓名"
         @input="actions.queryAll({ resetPage: true })">
-        <template #prepend>账号</template>
+        <template #prepend>姓名</template>
       </el-input>
 
       <el-input
@@ -21,9 +21,7 @@
         <template #prepend>电话</template>
       </el-input>
 
-      <div style="display: flex; flex: 1; justify-content: flex-end">
-        <el-button class="filter-item" type="primary" :icon="Plus" @click="actions.add()">添加</el-button>
-      </div>
+   
     </div>
     <el-table :data="tb.list" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
       <el-table-column prop="id" label="ID" align="center" width="80">
@@ -40,7 +38,7 @@
 
       <el-table-column prop="userInfo" label="反馈人信息" align="center" width="200">
         <template #default="scope">
-          {{ scope.row.userInfo }}
+          {{ scope.row.user ? scope.Row.user.id + ' ' + scope.Row.user.name + ' (' + scope.Row.user.phone + ')' : '未知用户' }}
         </template>
       </el-table-column>
     </el-table>
@@ -57,60 +55,7 @@
         @current-change="(v: number) => actions.pageChange(v)" />
     </div>
 
-    <!-- 添加/删除数据的弹窗 -->
-    <el-dialog v-model="tb.addDialogVisible" :title="actions.dialogTitle" width="620px" @closed="tb.isNew = false">
-      <el-form
-        ref="editPwdRef"
-        v-if="tb.addDialogVisible"
-        :disabled="tb.submitLoading"
-        :model="tb.row"
-        :rules="tb.source.rules"
-        label-position="left"
-        label-width="100px"
-        style="width: 400px; margin-left: 50px">
-        <el-form-item label="账号" prop="account">
-          <el-input v-model="tb.row.account" clearable placeholder="请输入账号" />
-        </el-form-item>
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="tb.row.name" clearable placeholder="请输入姓名" />
-        </el-form-item>
-
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="tb.row.password" clearable placeholder="请输入密码" />
-        </el-form-item>
-        <el-form-item label="电话" prop="phone">
-          <el-input v-model="tb.row.phone" clearable placeholder="请输入电话" />
-        </el-form-item>
-        <el-form-item label="等级" prop="level">
-          <el-radio-group v-model="tb.row.level">
-            <el-radio label="super">维护管理员</el-radio>
-            <el-radio label="common">普通管理员</el-radio>
-          </el-radio-group>
-        </el-form-item>
-
-        <el-form-item label="有效日期" prop="expireDate" style="width: 100%">
-          <el-date-picker
-            v-model="tb.row.expireDate"
-            type="datetime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            placeholder="请选择到期时间"
-            format="YYYY-MM-DD HH:mm:ss" />
-        </el-form-item>
-      </el-form>
-
-      <template #footer class="dialog-footer">
-        <el-button
-          type="primary"
-          :loading="tb.submitLoading"
-          @click="
-            validateEditPwdSubmit(() => {
-              actions.submit()
-            })
-          ">
-          提交
-        </el-button>
-      </template>
-    </el-dialog>
+  
     <!-- 添加/审核数据的弹窗 -->
   </div>
 </template>
@@ -118,7 +63,7 @@
 import refTable from '@/public/basic-table'
 import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
-import AccountQuery, { AccountModel, AccountQueryParmas } from '../../api/account'
+import FeedbackQuery, { FeedbackModel, FeedbackQueryParams } from '../../api/feedback'
 import http from '@/config/axios'
 import { FormInstance } from 'element-plus'
 import { useValidate } from '@/hooks/web/useValidate'
@@ -126,7 +71,7 @@ import { useValidate } from '@/hooks/web/useValidate'
 const { request } = http
 
 /** 创建表格，与表格相关操作 */
-const [tb, actions] = refTable<AccountModel, AccountQueryParmas, AccountQuery>(new AccountQuery(), {})
+const [tb, actions] = refTable<FeedbackModel, FeedbackQueryParams, FeedbackQuery>(new FeedbackQuery(), {})
 
 const [editPwdRef, validateEditPwdSubmit] = useValidate(ref<FormInstance>())
 
