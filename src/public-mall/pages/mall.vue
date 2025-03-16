@@ -1,6 +1,8 @@
 <template>
   <div class="app-container">
+    <!-- 筛选条件区域 -->
     <div class="filter-container-flex" style="flex-wrap: wrap">
+      <!-- 修改点1：参数名修正 -->
       <el-input
         class="filter-item"
         style="width: 320px"
@@ -11,10 +13,11 @@
         <template #prepend>商品标题</template>
       </el-input>
 
+      <!-- 修改点2：参数名修正为point -->
       <el-input
         class="filter-item"
         style="width: 320px"
-        v-model="tb.query.points"
+        v-model="tb.query.point"
         clearable
         placeholder="请输入所需积分"
         @input="actions.queryAll({ resetPage: true })">
@@ -25,94 +28,126 @@
         <el-button class="filter-item" type="primary" :icon="Plus" @click="actions.add()">添加商品</el-button>
       </div>
     </div>
-    <el-table :data="tb.list" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
-      <el-table-column prop="id" label="ID" align="center" width="80" />
 
-      <el-table-column prop="title" label="商品名" align="center">
-        <template #default="scope">
-          {{ scope.row.title }}
+    <!-- 数据表格 -->
+    <el-table :data="tb.list" element-loading-text="Loading" fit border>
+      <!-- 修改点3：字段名对齐 -->
+      <el-table-column prop="id" label="ID" width="80" align="center" />
+      
+      <el-table-column prop="title" label="商品名" align="center" />
+      
+      <el-table-column prop="img" label="图片" align="center" width="120">
+        <template #default="{row}">
+          <el-image 
+            style="width: 50px; height: 50px" 
+            :src="row.img" 
+            :preview-src-list="[row.img]"
+          
+          />
         </template>
       </el-table-column>
 
-      <el-table-column prop="imageUrl" label="图片" align="center">
-        <template #default="scope">
-          <el-image style="width: 50px; height: 50px" :src="scope.row.imageUrl" :preview-src-list="[scope.row.imageUrl]"></el-image>
+      <el-table-column prop="point" label="所需积分" align="center" width="120">
+        <template #default="{row}">
+          <el-tag type="warning">{{ row.point }}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column prop="points" label="所需积分" align="center">
-        <template #default="scope">
-          {{ scope.row.points }}
+      <el-table-column prop="count" label="库存" align="center" width="120" />
+
+      <!-- 修改点4：状态字段改为isBan -->
+      <el-table-column prop="isBan" label="上/下架" align="center" width="120">
+        <template #default="{row}">
+          <el-switch
+            v-model="row.isBan"
+            :active-value="false"
+            :inactive-value="true"
+            @change="handleStatusChange(row)"
+          />
         </template>
       </el-table-column>
 
-      <el-table-column prop="count" label="剩余数量" align="center">
-        <template #default="scope">
-          {{ scope.row.count }}
-        </template>
-      </el-table-column>
-
-      <el-table-column prop="isOnline" label="上/下架" align="center">
-        <template #default="scope">
-          <el-switch v-model="scope.row.isOnline" @change="handleStatusChange(scope.row)"></el-switch>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="操作" align="center" width="120">
-        <template #default="scope">
-          <el-button type="primary" link @click="actions.edit(scope.row)">编辑</el-button>
-          <el-button type="danger" link @click="handleDelete(scope.row)">删除</el-button>
+      <el-table-column label="操作" align="center" width="180" fixed="right">
+        <template #default="{row}">
+          <el-button link type="primary" @click="actions.edit(row)">编辑</el-button>
+      
         </template>
       </el-table-column>
     </el-table>
 
-    <!-- 翻页 -->
-    <div class="pagination-container" v-if="tb.total">
+    <!-- 分页组件 -->
+    <div class="pagination-container">
       <el-pagination
         v-model:current-page="tb.query.pageNum"
-        :page-sizes="[5, 20, 30, 50, 100, 200]"
         v-model:page-size="tb.query.pageSize"
         :total="tb.total"
-        background
+        :page-sizes="[5, 20, 30, 50, 100, 200]"
         layout="total, sizes, prev, pager, next, jumper"
-        @size-change="(v: number) => actions.sizeChange(v)"
-        @current-change="(v: number) => actions.pageChange(v)" />
+        background
+        @size-change="actions.sizeChange"
+        @current-change="actions.pageChange"
+      />
     </div>
 
-    <!-- 添加/编辑商品弹窗 -->
-    <el-dialog v-model="tb.addDialogVisible" :title="tb.isNew ? '添加商品' : '编辑商品'" width="620px">
+    <!-- 编辑弹窗 -->
+    <el-dialog v-model="tb.addDialogVisible" :title="tb.isNew ? '新增商品' : '编辑商品'" width="620px">
       <el-form
-        ref="editPwdRef"
-        v-if="tb.addDialogVisible"
-        :disabled="tb.submitLoading"
+        ref="formRef"
         :model="tb.row"
         :rules="tb.source.rules"
-        label-position="left"
         label-width="100px"
-        style="width: 400px; margin-left: 50px">
-        <el-form-item label="商品名" prop="title">
-          <el-input v-model="tb.row.title" clearable placeholder="请输入商品标题" />
+        label-position="left"
+      >
+        <el-form-item label="商品标题" prop="title">
+          <el-input v-model="tb.row.title" placeholder="请输入商品名称" />
         </el-form-item>
-        <el-form-item label="图片" prop="imageUrl">
-          <el-upload class="avatar-uploader" action="/upload" :show-file-list="false" :on-success="handleUploadSuccess">
-            <img v-if="tb.row.imageUrl" :src="tb.row.imageUrl" class="avatar" />
-            <el-icon v-else><Plus /></el-icon>
-          </el-upload>
+
+        <el-form-item label="商品图片" prop="img">
+          <!-- 修改点5：使用统一上传组件 -->
+          <Sin v-model="tb.row.img"  />
         </el-form-item>
-        <el-form-item label="所需积分" prop="points">
-          <el-input-number v-model="tb.row.points" :min="0" placeholder="" style="width: 100%" />
+
+        <el-form-item label="所需积分" prop="point">
+          <el-input-number 
+            v-model="tb.row.point" 
+            :min="0" 
+            :precision="0"
+            controls-position="right" 
+            label="积分"
+          />
         </el-form-item>
-        <el-form-item label="剩余数量" prop="count">
-          <el-input-number v-model="tb.row.count" :min="0" placeholder="" style="width: 100%" />
+
+        <el-form-item label="商品库存" prop="count">
+          <el-input-number 
+            v-model="tb.row.count" 
+            :min="0" 
+            :precision="0"
+            controls-position="right"
+            label="库存"
+          />
         </el-form-item>
-        <el-form-item label="上/下架" prop="isOnline">
-          <el-switch v-model="tb.row.isOnline" />
+
+        <el-form-item label="上架状态" prop="isBan">
+          <el-switch
+            v-model="tb.row.isBan"
+            :active-value="false"
+            :inactive-value="true"
+   
+          />
         </el-form-item>
       </el-form>
 
       <template #footer>
         <el-button @click="tb.addDialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="tb.submitLoading" @click="validateEditPwdSubmit(actions.submit)">确定</el-button>
+        <el-button
+          type="primary"
+          :loading="tb.submitLoading"
+          @click="   validateEditPwdSubmit(() => {
+                actions.submit()
+              })"
+        >
+          确认
+        </el-button>
       </template>
     </el-dialog>
   </div>
@@ -120,110 +155,64 @@
 
 <script lang="ts" setup>
 import refTable from '@/public/basic-table'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
-import AccountQuery, { AccountModel, AccountQueryParmas } from '../api/account'
-import http from '@/config/axios'
-import { FormInstance } from 'element-plus'
-import { useValidate } from '@/hooks/web/useValidate'
+import MallQuery, { MallModel, MallQueryParams } from '../api/mall' // 修改点6：引用修正
 import { ElMessage, ElMessageBox } from 'element-plus'
-
+import { useValidate } from '@/hooks/web/useValidate'
+import { FormInstance } from 'element-plus'
+import Sin from '@/widget/upload-qiniu/index.vue'
+import http from '@/config/axios'
 const { request } = http
-const [editPwdRef, validateEditPwdSubmit] = useValidate(ref<FormInstance>())
 
-/** 创建表格，与表格相关操作 */
-const [tb, actions] = refTable<AccountModel, AccountQueryParmas, AccountQuery>(new AccountQuery(), {})
+const [formRef, validateEditPwdSubmit] = useValidate(ref<FormInstance>())
 
-// 模拟数据
-onMounted(() => {
-  tb.list = [
-    {
-      id: 1,
-      title: '商品1',
-      imageUrl: 'https://example.com/image1.jpg',
-      points: 100,
-      isOnline: true,
-      count: 1
-    },
-    {
-      id: 2,
-      title: '商品2',
-      imageUrl: 'https://example.com/image2.jpg',
-      points: 200,
-      isOnline: false,
-      count: 100
-    },
-    {
-      id: 3,
-      title: '商品3',
-      imageUrl: 'https://example.com/image3.jpg',
-      points: 300,
-      isOnline: true,
-      count: 1000
-    }
-  ]
-  tb.total = tb.list.length
-})
+// 修改点7：初始化商品查询实例
+const [tb, actions] = refTable<MallModel, MallQueryParams, MallQuery>(
+  new MallQuery()
+)
 
-// 处理商品状态变更
-const handleStatusChange = async (row: any) => {
-  try {
-    await request({
-      url: `/api/mall/products/${row.id}/status`,
-      method: 'PUT',
-      data: { isOnline: row.isOnline }
-    })
-    ElMessage.success(`${row.isOnline ? '上架' : '下架'}成功`)
-  } catch (error) {
-    row.isOnline = !row.isOnline
-    ElMessage.error('操作失败')
+tb.list= [
+  {
+    id: 1,
+    title: '商品1',
+    img: 'https://img.yzcdn.cn/vant/apple-1.jpg',
+    point: 100,
+    count: 100,
+    isBan: false
+  },
+  {
+    id: 2,
+    title: '商品2',
+    img: 'https://img.yzcdn.cn/vant/apple-2.jpg',
+    point: 200,
+    count: 200,
+    isBan: true
   }
+]
+
+// 修改点8：状态切换处理
+const handleStatusChange = async (row: MallModel) => {
+  await request({
+    url: `api/admin/prod/ban/${row.id}`,
+    method: 'post',
+  })
+  ElMessage.success('操作成功')
+  actions.queryAll({ resetPage: true })
 }
 
-// 处理商品删除
-const handleDelete = (row: any) => {
-  ElMessageBox.confirm('确认删除该商品？', '提示', {
+// 修改点9：删除处理
+const handleDelete = (row: MallModel) => {
+  ElMessageBox.confirm(`确认删除【${row.title}】？`, '提示', {
     type: 'warning'
   }).then(async () => {
     try {
-      await request({
-        url: `/api/mall/products/${row.id}`,
-        method: 'DELETE'
-      })
+      await tb.source.deleteObj(row)
       ElMessage.success('删除成功')
       actions.queryAll()
-    } catch (error) {
+    } catch (e) {
       ElMessage.error('删除失败')
     }
   })
 }
-
-// 处理图片上传成功
-const handleUploadSuccess = (response: any) => {
-  tb.row.imageUrl = response.url
-}
 </script>
-
-<style scoped>
-.avatar-uploader {
-  width: 178px;
-  height: 178px;
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-
-.filter-container-flex {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-</style>

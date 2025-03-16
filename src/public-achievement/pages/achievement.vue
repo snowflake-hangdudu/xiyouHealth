@@ -112,7 +112,7 @@
 import Step from './steps.vue'
 import refTable from '@/public/basic-table'
 import { ref, onMounted } from 'vue'
-import TopicQuery, { TopicModel, TopicQueryParmas } from '../api/topic'
+import AchQuery, { AchModel, AchQueryParmas } from '../api/ach'
 import http from '@/config/axios'
 import { ElMessage } from 'element-plus'
 import { FormInstance } from 'element-plus'
@@ -124,7 +124,7 @@ const [editPwdRef, validateEditPwdSubmit] = useValidate(ref<FormInstance>())
 const { push } = useRouter()
 
 /** 创建表格，与表格相关操作 */
-const [tb, actions] = refTable<TopicModel, TopicQueryParmas, TopicQuery>(new TopicQuery(), {})
+const [tb, actions] = refTable<AchModel, AchQueryParmas, AchQuery>(new AchQuery(), {})
 
 // 模拟数据
 

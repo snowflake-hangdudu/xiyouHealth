@@ -3,7 +3,7 @@ import http from '@/config/axios'
 const { request } = http
 
 /** 模型 */
-export interface TopicModel {
+export interface AchModel {
   id?: number;              // 课题组ID，类型为 string
   name?: string;            // 课题组名字，类型为 string
   teacherId?: number;       // 导师ID，类型为 integer
@@ -15,13 +15,13 @@ export interface TopicModel {
 }
 
 /** 搜索条件 */
-export interface TopicQueryParmas extends BasicQueryParams {
+export interface AchQueryParmas extends BasicQueryParams {
  name?: string; // 课题组名字
  teacherName?: string; // 导师名字
 }
 
 /** 数据源，增删查改等请求 */
-export default class TopicQuery extends Queryable<TopicModel, TopicQueryParmas> {
+export default class AchQuery extends Queryable<AchModel, AchQueryParmas> {
   // 可设置父ID，例如查询用户下的全部文章
   // constructor(id) {
   //     super();
@@ -34,7 +34,7 @@ export default class TopicQuery extends Queryable<TopicModel, TopicQueryParmas> 
   }
 
   // 默认的内容
-  get defaultObject():  Partial<TopicModel> {
+  get defaultObject():  Partial<AchModel> {
     return {
    
       
@@ -42,10 +42,10 @@ export default class TopicQuery extends Queryable<TopicModel, TopicQueryParmas> 
   }
 
   // 读取正在输入的数据，用于表单校验
-  _valueGetter: () => Partial<TopicModel> = () => ({})
+  _valueGetter: () => Partial<AchModel> = () => ({})
 
   // 已输入的数据的Getter
-  get currentEditRow(): Partial<TopicModel> {
+  get currentEditRow(): Partial<AchModel> {
     return this._valueGetter()
   }
 
@@ -62,7 +62,7 @@ export default class TopicQuery extends Queryable<TopicModel, TopicQueryParmas> 
   }
 
   // 查询全部
-  async all(params: TopicQueryParmas) {
+  async all(params: AchQueryParmas) {
     console.log("查询全部", params);
     let res = await request({
       url: `api/admin/researchGroup/get/page`,
@@ -82,7 +82,7 @@ export default class TopicQuery extends Queryable<TopicModel, TopicQueryParmas> 
   }
 
   // 上传修改
-  async edit(obj: TopicModel) {
+  async edit(obj: AchModel) {
     console.log("修改", obj);
     obj = Object.assign({}, obj);
     let id = obj.id;
@@ -98,19 +98,19 @@ export default class TopicQuery extends Queryable<TopicModel, TopicQueryParmas> 
   }
 
   // // 添加
-  // async add(obj: TopicModel) {
+  // async add(obj: AchModel) {
   //   delete obj.id;
   //   return request({
-  //     url: "/api/hospital/Topic",
+  //     url: "/api/hospital/Ach",
   //     method: "post",
   //     data: obj,
   //   });
   // }
 
   // // 通过id删除
-  // async deleteObj(obj: TopicModel) {
+  // async deleteObj(obj: AchModel) {
   //   return request({
-  //     url: `/api/hospital/Topic/${obj.id}`,
+  //     url: `/api/hospital/Ach/${obj.id}`,
   //     method: "delete",
   //   });
   // }

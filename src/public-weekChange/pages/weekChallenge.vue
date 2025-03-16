@@ -97,7 +97,7 @@ import Detail from '../../public-weekChange/pages/detail.vue'
 import refTable from '@/public/basic-table'
 import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
-import ChallengeQuery, { ChallengeModel, ChallengeQueryParmas } from '../api/challenge'
+import ChallengeQuery, { ChallengeModel, ChallengeQueryParams } from '../api/challenge'
 import http from '@/config/axios'
 import ElMessage from 'element-plus'
 import { FormInstance, FormRules } from 'element-plus'
@@ -107,7 +107,7 @@ import { onMounted } from 'vue'
 const [editPwdRef, validateEditPwdSubmit] = useValidate(ref<FormInstance>())
 
 /** 创建表格，与表格相关操作 */
-const [tb, actions] = refTable<ChallengeModel, ChallengeQueryParmas, ChallengeQuery>(new ChallengeQuery())
+const [tb, actions] = refTable<ChallengeModel,ChallengeQueryParams, ChallengeQuery>(new ChallengeQuery())
 
 const bindUserOptions = ref<any[]>([])
 onMounted(() => {

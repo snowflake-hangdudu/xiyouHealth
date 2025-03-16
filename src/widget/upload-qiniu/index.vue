@@ -185,7 +185,7 @@ let w = computed(() => {
   return props.w || h.value || 148
 })
 let limit = computed(() => {
-  return props.limit ?? 4
+  return props.limit ?? 1
 })
 
 const status = computed(() => {
