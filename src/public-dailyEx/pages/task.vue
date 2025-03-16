@@ -55,6 +55,13 @@
         </template>
       </el-table-column>
 
+      <el-table-column prop="participants" label="任务人员信息" align="center">
+        <template #default="scope">
+          <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
+        </template>
+      </el-table-column>
+
+
       <el-table-column label="操作" width="180" fixed="right">
         <template #default="{row}">
           <el-button link type="primary" @click="actions.edit(row)">编辑</el-button>
@@ -124,12 +131,14 @@
         </el-button>
       </template>
     </el-dialog>
+    <Detail ref="detailRef" @close="actions.queryAll()" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import refTable from '@/public/basic-table'
 import { ref } from 'vue'
+import Detail from './detail.vue'
 import { Plus } from '@element-plus/icons-vue'
 import TaskQuery, { TaskModel, TaskQueryParams } from '../api/task'
 import { ElMessage } from 'element-plus'
@@ -182,5 +191,11 @@ const changeOnline = async (row: TaskModel) => {
   } catch (error) {
     ElMessage.error('操作失败')
   }
+}
+
+const detailRef = ref<any>(null)
+
+const openDetail = (row: any) => {
+  detailRef.value.showModal(row)
 }
 </script>
