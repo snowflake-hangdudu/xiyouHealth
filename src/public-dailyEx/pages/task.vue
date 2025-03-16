@@ -1,189 +1,186 @@
 <template>
   <div class="app-container">
+    <!-- 筛选条件区域 -->
     <div class="filter-container-flex" style="flex-wrap: wrap">
       <el-input
         class="filter-item"
         style="width: 320px"
-        v-model="tb.query.name"
+        v-model="tb.query.content"
         clearable
-        placeholder="请输入任务任务标题"
+        placeholder="请输入任务内容"
         @input="actions.queryAll({ resetPage: true })">
-        <template #prepend>任务任务标题</template>
+        <template #prepend>任务内容</template>
       </el-input>
 
-      <div class="filter-label">是否开启室内任务</div>
-      <el-switch v-model="tb.query.isInside" class="filter-item" />
+      <el-select
+        class="filter-item"
+        v-model="tb.query.type"
+        placeholder="任务类型"
+        clearable
+        style="width: 300px"
+        @change="actions.queryAll({ resetPage: true })"
+      >
+      
+        <el-option label="室外任务" value="out" />
+        <el-option label="室内任务" value="in" />
+      </el-select>
 
       <div style="display: flex; flex: 1; justify-content: flex-end">
         <el-button class="filter-item" type="primary" :icon="Plus" @click="actions.add()">新建运动任务</el-button>
       </div>
     </div>
-    <el-table :data="tb.list" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
-      <el-table-column prop="id" label="ID" align="center">
-        <template #default="scope">
-          {{ scope.row.id }}
+
+    <!-- 数据表格 -->
+    <el-table :data="tb.list" element-loading-text="Loading" fit border style="width: 100%">
+      <el-table-column prop="id" label="ID" width="80" align="center" />
+      
+      <el-table-column prop="content" label="任务内容" min-width="200" />
+      
+      <el-table-column prop="type" label="任务类型" width="120" align="center">
+        <template #default="{row}">
+          <el-tag :type="row.type === 'out' ? 'success' : 'info'">
+            {{ row.type === 'out' ? '室外' : '室内' }}
+          </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column prop="content" label="任务内容" align="center">
-        <template #default="scope">
-          {{ scope.row.content }}
-        </template>
-      </el-table-column>
-
-      <el-table-column prop="content" label="绑定该任务人员" align="center">
-        <template #default="scope">
-          {{ scope.row.peopleInfo }}
-        </template>
-      </el-table-column>
-
-      <el-table-column prop="participants" label="任务人员信息" align="center">
-        <template #default="scope">
-          <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="上/下架" align="center">
-        <template #default="scope">
+      <el-table-column prop="isBan" label="上/下架" width="120" align="center">
+        <template #default="{row}">
           <el-switch
-            v-model="scope.row.isBan"
-            @change="
-              () =>
-                tb.source.edit(scope.row).then(() => {
-                  ElMessage.success('修改成功')
-                  actions.queryAll()
-                })
-            " />
+            v-model="row.isBan"
+            :active-value="false"
+            :inactive-value="true"
+            @change="changeOnline(row)"
+          />
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center">
-        <template #default="scope">
-          <el-button type="text" @click="() => actions.edit(scope.row)">编辑</el-button>
+      <el-table-column label="操作" width="180" fixed="right">
+        <template #default="{row}">
+          <el-button link type="primary" @click="actions.edit(row)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <!-- 翻页 -->
-    <div class="pagination-container" v-if="tb.total">
+    <!-- 分页组件 -->
+    <div class="pagination-container">
       <el-pagination
         v-model:current-page="tb.query.pageNum"
-        :page-sizes="[5, 20, 30, 50, 100, 200]"
         v-model:page-size="tb.query.pageSize"
         :total="tb.total"
-        background
+        :page-sizes="[5, 20, 30, 50, 100, 200]"
         layout="total, sizes, prev, pager, next, jumper"
-        @size-change="(v: number) => actions.sizeChange(v)"
-        @current-change="(v: number) => actions.pageChange(v)" />
+        background
+        @size-change="actions.sizeChange"
+        @current-change="actions.pageChange"
+      />
     </div>
 
-    <!-- 添加/删除数据的弹窗 -->
-    <el-dialog v-model="tb.addDialogVisible" title="编辑任务" width="620px" @closed="tb.isNew = false">
+    <!-- 编辑弹窗 -->
+    <el-dialog v-model="tb.addDialogVisible" :title="tb.isNew ? '新建任务' : '编辑任务'" width="620px">
       <el-form
-        ref="editPwdRef"
-        v-if="tb.addDialogVisible"
-        :disabled="tb.submitLoading"
+        ref="formRef"
         :model="tb.row"
         :rules="tb.source.rules"
-        label-position="left"
         label-width="100px"
-        style="width: 400px; margin-left: 50px">
+        label-position="left"
+      >
         <el-form-item label="任务内容" prop="content">
-          <el-input v-model="tb.row.content" clearable placeholder="请输入内容" />
+          <el-input
+            v-model="tb.row.content"
+            placeholder="请输入任务内容"
+            type="textarea"
+            :rows="3"
+            show-word-limit
+            maxlength="500"
+          />
         </el-form-item>
 
-        <el-form-item label="上/下架" prop="isBan">
-          <el-switch v-model="tb.row.isBan" />
-        </el-form-item>
-        <el-form-item label="任务类型" prop="participants">
-          <el-select v-model="tb.row.participants" placeholder="请选择任务类型">
-            <el-option v-for="item in particiOptions" :key="item.id" :label="item.name" :value="item.id" />
+        <el-form-item label="任务类型" prop="type">
+          <el-select v-model="tb.row.type" placeholder="请选择任务类型">
+            <el-option label="室外任务" value="out" />
+            <el-option label="室内任务" value="in" />
           </el-select>
+        </el-form-item>
+
+        <el-form-item label="任务状态" prop="isBan">
+          <el-switch
+            v-model="tb.row.isBan"
+            :active-value="false"
+            :inactive-value="true"
+       
+          />
         </el-form-item>
       </el-form>
 
-      <template #footer class="dialog-footer">
+      <template #footer>
+        <el-button @click="tb.addDialogVisible = false">取消</el-button>
         <el-button
           type="primary"
           :loading="tb.submitLoading"
-          @click="
-            validateEditPwdSubmit(() => {
-              actions.submit()
-            })
-          ">
-          提交
+          @click="validateEditPwdSubmit(actions.submit())"
+        >
+          确认
         </el-button>
       </template>
     </el-dialog>
   </div>
-  <Detail ref="detailRef" @close="actions.queryAll()" />
 </template>
 
 <script lang="ts" setup>
-import Detail from '../../public-dailyEx/pages/detail.vue'
 import refTable from '@/public/basic-table'
 import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
-import CollegeQuery, { CollegeModel, CollegeQueryParmas } from '../api/college'
-import http from '@/config/axios'
+import TaskQuery, { TaskModel, TaskQueryParams } from '../api/task'
 import { ElMessage } from 'element-plus'
-import { FormInstance, FormRules } from 'element-plus'
 import { useValidate } from '@/hooks/web/useValidate'
+import http from '@/config/axios'
 
-const [editPwdRef, validateEditPwdSubmit] = useValidate(ref<FormInstance>())
 const { request } = http
 
-/** 创建表格，与表格相关操作 */
-const [tb, actions] = refTable<CollegeModel, CollegeQueryParmas, CollegeQuery>(new CollegeQuery(), {})
+const [formRef, validateEditPwdSubmit] = useValidate(ref<FormInstance>())
 
-// 模拟数据
-tb.list = [
-  {
-    id: 1,
-    name: '运动任务1',
-    content: '跑步10分钟随机拍照',
-    participants: '张三, 李四',
-    isBan: false,
-    createdAt: '2025-02-19 10:00:00',
-    peopleInfo: '张三, 李四'
-  },
-  {
-    id: 2,
-    name: '运动任务2',
-    content: '跑步20分钟随机拍照',
-    participants: '王五, 赵六',
-    isBan: true,
-    createdAt: '2025-02-18 09:30:00',
-    peopleInfo: '王五, 赵六'
-  },
-  {
-    id: 3,
-    name: '运动任务3',
-    content: '跑步30分钟随机拍照',
-    participants: '刘七, 陈八',
-    isBan: false,
-    createdAt: '2025-02-17 14:15:00',
-    peopleInfo: '刘七, 陈八'
+// 初始化表格
+const [tb, actions] = refTable<TaskModel, TaskQueryParams, TaskQuery>(
+  new TaskQuery()
+
+)
+
+
+
+
+
+// 模拟数据（开发时使用）
+if (import.meta.env.DEV) {
+  tb.list = [
+    {
+      id: 1,
+      content: '室外跑步5公里',
+      type: 'out',
+      isBan: false,
+      createdAt: '2024-03-01'
+    },
+    {
+      id: 2,
+      content: '室内瑜伽训练',
+      type: 'in',
+      isBan: true,
+      createdAt: '2024-03-02'
+    }
+  ]
+  tb.total = tb.list.length
+}
+
+const changeOnline = async (row: TaskModel) => {
+  try {
+    await request({
+      url: `api/admin/task/online/${row.id}`,
+      method: 'PUT',
+  
+    })
+    ElMessage.success('操作成功')
+  } catch (error) {
+    ElMessage.error('操作失败')
   }
-]
-
-const userOptions = [
-  { id: 1, name: '张三' },
-  { id: 2, name: '李四' },
-  { id: 3, name: '王五' },
-  { id: 4, name: '赵六' },
-  { id: 5, name: '刘七' },
-  { id: 6, name: '陈八' }
-]
-
-const particiOptions = [
-  { id: 1, name: '室内运动' },
-  { id: 2, name: '室外运动' }
-]
-
-const detailRef = ref<any>(null)
-
-const openDetail = (row: any) => {
-  detailRef.value.showModal(row)
 }
 </script>

@@ -133,6 +133,8 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
             //本地
             'development': 'http://192.168.31.97:7098/api/',
 
+            // 'development': 'http://124.222.23.240/api/'
+
             // 'development': 'https://szubbtest.deepmedical.net.cn/laboratory_reservation/api/',
             //测试环境
             // 'development': 'https://szubbtest.deepmedical.net.cn/szu_convergence_media/api/',

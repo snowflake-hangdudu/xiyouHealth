@@ -27,40 +27,42 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="content" label="题目" align="center">
+      <el-table-column prop="question" label="题目" align="center">
         <template #default="scope">
-          {{ scope.row.qus }}
+          {{ scope.row.question }}
         </template>
       </el-table-column>
 
-      <el-table-column prop="content" label="答案" align="center">
+      <el-table-column prop="answer" label="答案" align="center">
         <template #default="scope">
-          {{ scope.row.ans ? ' 是' : ' 否 ' }}
+          {{ scope.row.answer ? '是' : '否' }}
         </template>
       </el-table-column>
 
-      <!-- Content Column -->
-      <el-table-column prop="content" label="顺序" align="center">
+      <el-table-column prop="sort" label="顺序" align="center">
         <template #default="scope">
-          {{ scope.row.step }}
+          {{ scope.row.sort }}
         </template>
       </el-table-column>
 
-      <!-- Author Column -->
-      <el-table-column prop="isOnline" label="上/下架" align="center">
+      <el-table-column prop="isBan" label="上/下架" align="center">
         <template #default="scope">
-          <el-switch v-model="scope.row.isOnline"></el-switch>
+          <el-switch 
+            v-model="scope.row.isBan"
+           @change="changeOnline(scope.row.id)"
+            :active-value="false"
+            :inactive-value="true"
+          ></el-switch>
         </template>
       </el-table-column>
 
-      <!-- Content Column -->
-      <el-table-column prop="participantInfo" label="参与答题人信息" align="center">
+      
+      <el-table-column prop="participantInfo" label="参与人信息" align="center">
         <template #default="scope">
           <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
         </template>
       </el-table-column>
 
-      <!-- Actions Column -->
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button @click="actions.edit(scope.row)" link type="primary">编辑</el-button>
@@ -87,7 +89,7 @@
       v-if="tb.addDialogVisible"
       :disabled="tb.submitLoading"
       :model="tb.row"
-      :rules="tb.source.rules"
+     
       label-position="left"
       label-width="100px"
       style="width: 400px; margin-left: 50px">
@@ -99,20 +101,27 @@
         <Sin v-model="tb.row.content" folderType="video" />
       </el-form-item>
 
-      <el-form-item label="题目" prop="content">
-        <el-input v-model="tb.row.name" placeholder=""></el-input>
+      <el-form-item label="题目" prop="question">
+        <el-input v-model="tb.row.question" placeholder="请输入题目"></el-input>
       </el-form-item>
 
-      <el-form-item label="答案(是否)" prop="content">
-        <el-switch v-model="tb.row.isOnline" />
+      <el-form-item label="答案" prop="answer">
+        <el-switch 
+          v-model="tb.row.answer"
+        />
       </el-form-item>
 
-      <el-form-item label="上/下架" prop="isOnline">
-        <el-switch v-model="tb.row.isOnline" />
+      <el-form-item label="顺序" prop="sort">
+        <el-input-number v-model="tb.row.sort" :min="0" controls-position="right" />
       </el-form-item>
 
-      <el-form-item label="顺序" prop="step">
-        <el-input v-model="tb.row.step" clearable placeholder="请输入顺序" />
+      <el-form-item label="上架状态" prop="isBan">
+        <el-switch 
+          v-model="tb.row.isBan"
+          :active-value="false"
+          :inactive-value="true"
+      
+        />
       </el-form-item>
     </el-form>
 
@@ -121,16 +130,16 @@
         type="primary"
         :loading="tb.submitLoading"
         @click="
-          validateEditPwdSubmit(() => {
+        
             actions.submit()
-          })
+     
         ">
         提交
       </el-button>
     </template>
   </el-dialog>
-  <!-- 详情弹窗 -->
-  <Detail ref="detailRef" @close="actions.queryAll()" />
+   <!-- 详情弹窗 -->
+   <Detail ref="detailRef" @close="actions.queryAll()" />
 </template>
 
 <script lang="ts" setup>
@@ -138,43 +147,65 @@ import refTable from '@/public/basic-table'
 import { ref } from 'vue'
 import Detail from './detail.vue'
 import { Plus } from '@element-plus/icons-vue'
-import MentorQuery, { MentorModel, MentorQueryParmas } from '../api/mentor'
+import HealthContentQuery, { 
+  HealthContentModel, 
+  HealthContentQueryParams 
+} from '../api/healthContent' // 确保路径正确
 import { qiniuUrl, qiniuTokenUrl, qiniuUploadUrl } from '@/config/qiniu'
 import type { FormInstance } from 'element-plus'
 import Sin from '@/widget/upload-qiniu/index.vue'
 import { useValidate } from '@/hooks/web/useValidate'
-import http from '@/config/axios'
 import { ElMessage } from 'element-plus'
+import http from '@/config/axios'
+
 const { request } = http
+
 const [editPwdRef, validateEditPwdSubmit] = useValidate(ref<FormInstance>())
 
-const imgUrl = '/src/assets/imgs/test.jpeg'
 /** Create table and related operations */
-const [tb, actions] = refTable<MentorModel, MentorQueryParmas, MentorQuery>(new MentorQuery(), {})
+const [tb, actions] = refTable<HealthContentModel, HealthContentQueryParams, HealthContentQuery>(
+  new HealthContentQuery(), 
+  {}
+)
 
-// 模拟数据
+// 模拟数据调整字段
 tb.list = [
   {
     id: 1,
     title: '健康教育内容1',
     content: '',
-    isOnline: true,
-    date: '2024-01-01 12:00:00',
-    participantInfo: '一些参与信息',
-    qus: '你今天锻炼了吗',
-    step: 1
+    isBan: false,
+    question: '你今天锻炼了吗',
+    answer: true,
+    sort: 1,
+    createdAt: '2024-01-01 12:00:00'
   },
   {
     id: 2,
     title: '健康教育内容2',
     content: '',
-    isOnline: false,
-    date: '2024-02-02 13:00:00',
-    participantInfo: '另一些参与信息',
-    qus: '你今天运动了吗',
-    step: 2
+    isBan: true,
+    question: '你今天运动了吗',
+    answer: false,
+    sort: 2,
+    createdAt: '2024-02-02 13:00:00'
   }
 ]
+
+const changeOnline = async(id) => {
+ await request({
+   url: `api/admin/health/online/${id}`,
+   method: 'PUT',
+   data: {
+     isBan: tb.row.isBan
+   }
+ }).then(() => {
+   ElMessage.success('操作成功')
+ }).catch(() => {
+   ElMessage.error('操作失败')
+ })
+
+}
 
 const detailRef = ref<any>(null)
 

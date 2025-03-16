@@ -7,7 +7,7 @@ export const qiniuImgBasePath = 'https://bnypublic.deepmedical.net.cn/'
 export const qiniuTokenUrl = 'api/thirdParty/qiniu/uploadToken'
 
 //上传文件地址
-export const qiniuUploadUrl = 'https://upload-z2.qiniup.com/'
+export const qiniuUploadUrl = 'http://124.222.23.240/api/thirdParty/cos/upload'
 
 /**
  * 生成qiniu链接

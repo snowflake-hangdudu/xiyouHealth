@@ -224,16 +224,16 @@ const onSelectFile = async (file: UploadFile, files: UploadFiles, replaceIndex?:
     allowedFileTypes = ['mp4', 'mov', 'avi', 'wmv', 'flv', 'mkv', 'rmvb', '3gp', 'mpeg', 'mpg', 'm4v', 'f4v', 'm3u8', 'ts', 'dat', 'mts', 'vob']
   }
 
-  // 校验文件类型
-  if (!_fileType || !allowedFileTypes.includes(_fileType)) {
-    ElNotification({
-      title: '文件类型错误',
-      message: `请上传 ${folderType.value === 'image' ? '图片' : '视频'} 文件。支持的格式：${allowedFileTypes.join(', ')}`,
-      type: 'warning',
-      duration: 2000
-    })
-    return
-  }
+  // // 校验文件类型
+  // if (!_fileType || !allowedFileTypes.includes(_fileType)) {
+  //   ElNotification({
+  //     title: '文件类型错误',
+  //     message: `请上传 ${folderType.value === 'image' ? '图片' : '视频'} 文件。支持的格式：${allowedFileTypes.join(', ')}`,
+  //     type: 'warning',
+  //     duration: 2000
+  //   })
+  //   return
+  // }
 
   // 文件大小校验
   if (file.size! > maxSize.value) {
@@ -250,11 +250,11 @@ const onSelectFile = async (file: UploadFile, files: UploadFiles, replaceIndex?:
 
   // 批量上传控制
   batchLimit(4, async () => {
-    const data = await request.request({
-      url: `${qiniuTokenUrl}`,
-      method: 'get'
-    })
-    upload_data.value.token = data.data
+    // const data = await request.request({
+    //   url: `${qiniuTokenUrl}`,
+    //   method: 'get'
+    // })
+    // upload_data.value.token = data.data
 
     const _folderName = props.folderName || folderType.value // 使用 folderType 作为文件夹名称
     const timestamp = new Date().getTime().toString(36)
@@ -262,8 +262,8 @@ const onSelectFile = async (file: UploadFile, files: UploadFiles, replaceIndex?:
     upload_data.value.key = `laboratory-reservation/${_folderName}/${timestamp}_${randomStr}.${_fileType}`
 
     const formData = new FormData()
-    formData.append('token', upload_data.value.token)
-    formData.append('key', upload_data.value.key)
+    // formData.append('token', upload_data.value.token)
+    // formData.append('key', upload_data.value.key)
     formData.append('file', file.raw as File)
 
     try {
