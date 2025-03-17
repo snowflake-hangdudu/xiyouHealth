@@ -111,6 +111,8 @@
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button @click="openGroup(scope.row)" link type="primary">组队</el-button>
+          <el-button @click="openGroup(scope.row)" link type="primary">绑定任务</el-button>
+          <el-button @click="openGroup(scope.row)" link type="primary">发送消息</el-button>
          
 
          

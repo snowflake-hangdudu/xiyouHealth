@@ -55,6 +55,12 @@
 
       <el-table-column prop="count" label="库存" align="center" width="120" />
 
+      <el-table-column prop="count" label="兑换人信息" align="center" width="120" >
+        <template #default="{row}">
+          <el-button type="text">查看</el-button>
+        </template>
+      </el-table-column>
+
       <!-- 修改点4：状态字段改为isBan -->
       <el-table-column prop="isBan" label="上/下架" align="center" width="120">
         <template #default="{row}">

@@ -58,11 +58,11 @@ const signIn = async () => {
       loading.value = true
       try {
         // 登录接口,获取token。模拟获取token，实际项目中应该通过接口获取
-        // const loginRes = await loginApi(formData.value)
-        const loginRes = {
-          code: 200,
-          data: 'admin-token'
-        }
+        const loginRes = await loginApi(formData.value)
+        // const loginRes = {
+        //   code: 200,
+        //   data: 'admin-token'
+        // }
         console.log('loginRes', loginRes)
         console.log('loginRes.code', loginRes.code)
         console.log('loginRes.data', loginRes.data)
@@ -70,13 +70,13 @@ const signIn = async () => {
           appStore.setToken(loginRes.data)
           wsCache.set('admin-token', loginRes.data)
           // 登录成功后获取用户信息,下面直接给信息,实际项目中应该通过接口获取
-          // const res = await getUserInfoApi()
-          const res = {
-            data: {
-              id: 6003,
-              role: ['super']
-            }
-          }
+          const res = await getUserInfoApi()
+          // const res = {
+          //   data: {
+          //     id: 6003,
+          //     role: ['super']
+          //   }
+          // }
           appStore.setUserInfo(res.data)
           await generateRouters()
           // onInitUserInfo()   加载用户信息,暂时用不到,留着

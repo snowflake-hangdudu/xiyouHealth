@@ -73,17 +73,16 @@ interface formData {
   account: string
   password: string
   check_password: string
-  phone: string
-  level: string
+
   name: string
 }
 
 const formData = ref<formData>({
   password: '',
   check_password: '',
-  phone: '',
+
   account: '',
-  level: 'super',
+
   name: ''
 })
 
@@ -103,8 +102,6 @@ async function submit() {
       name: formData.value.name,
       account: formData.value.account,
       password: formData.value.password,
-      phone: formData.value.phone,
-      level: formData.value.level
     }
   })
 
@@ -137,8 +134,8 @@ async function submit() {
     <el-form-item label="账号" prop="account">
       <el-input v-model="formData.account" placeholder="请输入账号" />
     </el-form-item>
-    <el-form-item label="手机号" prop="phone">
-      <el-input v-model="formData.phone" placeholder="请输入手机号" />
+    <el-form-item label="姓名" prop="name">
+      <el-input v-model="formData.name" placeholder="请输入姓名" />
     </el-form-item>
     <el-form-item label="密码" prop="password">
       <el-input v-model="formData.password" type="password" placeholder="请输入密码" show-password />

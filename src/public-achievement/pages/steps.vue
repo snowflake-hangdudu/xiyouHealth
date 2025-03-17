@@ -118,7 +118,7 @@ const getStatusType = (status: string): string => {
 const getStatusText = (status: string): string => {
   switch (status) {
     case 'inProgress':
-      return '开启任务'
+      return '进行中'
     case 'completed':
       return '完成任务'
 

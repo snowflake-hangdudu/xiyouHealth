@@ -122,6 +122,13 @@ import { getClipboardContents } from '@/utils/clipboard'
 import { blobToFile } from '@/utils/file'
 import request from '@/config/axios'
 import axios from 'axios'
+import { useCache } from '@/hooks/web/useCache'
+import { useAppStore } from '@/store/modules/app'
+// import performanceReport from '@/utils/performanceReport'
+
+const appStore = useAppStore()
+
+const { wsCache } = useCache()
 
 const props = withDefaults(
   defineProps<{
@@ -264,14 +271,24 @@ const onSelectFile = async (file: UploadFile, files: UploadFiles, replaceIndex?:
     const formData = new FormData()
     // formData.append('token', upload_data.value.token)
     // formData.append('key', upload_data.value.key)
+    const token = wsCache.get('admin-token')
+    if (!token) throw new Error("Token 缺失");
     formData.append('file', file.raw as File)
 
+
+ 
+
     try {
-      const response = await axios.post(`${qiniuUploadUrl}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+         // 使用 Axios 发送 POST 请求
+         const response = await axios({
+            url: qiniuUploadUrl,
+            method: 'post',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data' // 表明请求体是 form-data 类型
+            },
+            data: formData
+        });
       upload_key.value = response.data.key
     } catch (error) {
       console.error(error)
