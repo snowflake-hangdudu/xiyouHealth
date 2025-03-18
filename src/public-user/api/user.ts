@@ -75,13 +75,11 @@ phone: params.phone || null
 }
 })
 
-if (res.data?.code !== 0) {
-throw new Error(res.data?.msg || '请求失败')
-}
+
 
 return {
-data: res.data.data?.rows || [],
-total: res.data.data?.count || 0
+data: res.data.rows || [],
+total: res.data.count || 0
 }
 } catch (error) {
 console.error('[UserQuery] 分页查询失败:', error)

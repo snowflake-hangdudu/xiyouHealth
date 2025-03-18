@@ -111,11 +111,8 @@
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button @click="openGroup(scope.row)" link type="primary">组队</el-button>
-          <el-button @click="openGroup(scope.row)" link type="primary">绑定任务</el-button>
-          <el-button @click="openGroup(scope.row)" link type="primary">发送消息</el-button>
-         
-
-         
+          <el-button @click="openNews(scope.row)" link type="primary">绑定任务</el-button>
+          <el-button @click="openNews(scope.row)" link type="primary">发送消息</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -132,6 +129,9 @@
   <Group ref="groupRef" @close="actions.queryAll()" />
   <!-- 任务关联弹窗 -->
   <Task ref="taskRef" @close="actions.queryAll()" />
+  <!-- 消息弹窗 -->
+  <News ref="newsRef" @close="actions.queryAll()" />
+
 </template>
 
 <script lang="ts" setup>
@@ -140,6 +140,7 @@ import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import Group from './group.vue'
 import Task from './task.vue'
+import News from './news.vue'
 
 import refTable from '@/public/basic-table'
 import UserQuery, { UserModel, UserQueryParams } from '../../api/user' // 修改为 UserQueryParams
@@ -225,11 +226,11 @@ const mockData = [
   }
 ]
 
-// 将模拟数据添加到 tb.list  中
-tb.list = tb.list.concat(mockData)
+
 
 const groupRef = ref<any>(null)
 const taskRef = ref<any>(null)
+const newsRef = ref<any>(null)
 
 const isShow =async (row) => {
   await request({
@@ -249,5 +250,9 @@ const openGroup = (row: UserModel) => {
 
 const openTask = (row: UserModel) => {
   taskRef.value.showModal(row)
+}
+
+const openNews = (row: UserModel) => {
+  newsRef.value.showModal(row)
 }
 </script>

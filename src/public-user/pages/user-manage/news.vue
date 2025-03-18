@@ -1,24 +1,15 @@
 <template>
   <el-dialog width="900px" ref="dialog" v-model="open" @close="close">
     <div class="all-container">
-      <div class="container">
-        <div class="user-info">
-          <!-- 备注 -->
-          <div class="info-item">
-            <span class="label" style="display: flex; align-items: center">关联用户：</span>
-            <span class="value">
-              <el-select v-model="userId" style="width: 500px">
-                <el-option
-                  v-for="item in userList"
-                  :key="item.id"
-                  :label="item.name + (item.isConnect ? '(已关联)' : '')"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </span>
-          </div>
-        </div>
-      </div>
+      <el-form
+        :model="row"
+        label-position="left"
+        label-width="100px"
+        style="width: 800px; margin-left: 50px">
+        <el-form-item label="消息"  >
+          <el-input v-model="news" placeholder="请输入消息" style="width: 300px;" />
+        </el-form-item>
+      </el-form>
     </div>
 
     <template #footer>
@@ -33,72 +24,51 @@
 <script setup lang="ts">
 import { ref, defineExpose, computed } from 'vue'
 import http from '@/config/axios'
-import { UserModel } from '../../api/user'
 import { qiniuUrl } from '@/config/qiniu'
 import { ElMessage } from 'element-plus'
+import refTable from '@/public/basic-table'
 
 const { request } = http
-
 const open = ref(false)
-
+const row = ref<any>({})
+const news = ref<any>(null)
 const id = ref<number | null>(null) // 用户ID
-const userId = ref<number | null>(1) // 用户ID
 
-const showModal = (row: UserModel) => {
+
+
+const showModal = (row: any) => {
+  open.value = true
   if (row.id) {
     id.value = row.id
-    open.value = true
   } else {
     ElMessage.error('获取信息失败')
   }
 }
 
 const savemsg = async () => {
+  if (!news.value) {
+    ElMessage.error('请输入消息')
+    return
+  }
   try {
-    // 使用 ElMessageBox.confirm 替代 elconfirm
-    await ElMessageBox.confirm('是否确定关联用户？', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    });
-
-    // 用户确认后执行
     await request({
-      url: `api/admin/team`,
+      url: `api/admin/msg/save`,
       method: 'POST',
       data: {
-        user1Id: id.value,
-        user2Id: userId.value
-      }
-    });
-    
-    ElMessage.success('关联成功');
-    open.value = false;
-  } catch (error) {
-    // 如果用户点击取消或请求失败，都会进入 catch
-    if (error !== 'cancel') { // 通过错误类型区分是取消还是请求失败
-      ElMessage.error('关联失败');
-    }
-    open.value = false;
-  }
-};
-
-
-const getList = async () => {
-  try {
-    const res = await request({
-      url: `api/admin/user/get/page`,
-      method: 'GET',
-      params: {
-        pageNum: 1,
-        pageSize: 999
+        msg: news.value,
+        userId: id.value
       }
     })
-    userList.value = res.data
+    ElMessage.success('消息发送成功')
+    open.value = false
   } catch (error) {
-    ElMessage.error('获取信息失败')
+    ElMessage.error('消息发送失败')
   }
 }
+
+
+
+
 
 const close = () => {}
 
