@@ -128,13 +128,7 @@
        
           />
         </el-form-item>
-        <el-form-item label="绑定人" prop="list">
-          <el-select  placeholder="请选择绑定人" multiple>
-            <el-option label="用户1" value="1" />
-            <el-option label="用户2" value="2" />
-            <el-option label="用户3" value="3" />
-          </el-select>
-        </el-form-item>
+ 
       </el-form>
 
       <template #footer>
@@ -174,26 +168,7 @@ const [tb, actions] = refTable<TaskModel, TaskQueryParams, TaskQuery>(
 
 const open=ref(false)
 
-// 模拟数据（开发时使用）
-if (import.meta.env.DEV) {
-  tb.list = [
-    {
-      id: 1,
-      content: '室外跑步5公里',
-      type: 'out',
-      isBan: false,
-      createdAt: '2024-03-01'
-    },
-    {
-      id: 2,
-      content: '室内瑜伽训练',
-      type: 'in',
-      isBan: true,
-      createdAt: '2024-03-02'
-    }
-  ]
-  tb.total = tb.list.length
-}
+
 
 const changeOnline = async (row: TaskModel) => {
   try {

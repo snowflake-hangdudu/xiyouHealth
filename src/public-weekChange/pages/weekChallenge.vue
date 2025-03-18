@@ -24,8 +24,6 @@
         </template>
       </el-table-column>
 
-
-
       <el-table-column  label="周挑战人员信息" align="center">
         <template #default="scope: ElTableRow<ChallengeModel>">
           <el-button @click="openDetail(scope.row)" link type="primary">查看详情</el-button>
@@ -68,8 +66,10 @@
         <el-form-item label="顺序" prop="sort">
           <el-input-number v-model="tb.row.sort" clearable placeholder="请输入顺序" />
         </el-form-item>
-
-     
+       
+        <el-form-item label="上/下架" prop="isBan">
+          <el-switch v-model="tb.row.isBan"   />
+        </el-form-item>
       </el-form>
 
       <template #footer>
@@ -113,22 +113,13 @@ const bindUserOptions = ref<any[]>([])
 onMounted(() => {
  
 })
-// 模拟数据
-tb.list = [
-  {
-    id: 1,
-    sort: 1,
-    content: '跑步10分钟',
-    isBan: false,
-    createdAt: '2025-02-19 10:00:00'
-  }
-]
 
 
 
 
 
-const detailRef = ref(null)
+
+const detailRef = ref<any>(null)
 const openDetail = (row: ChallengeModel) => {
   detailRef.value.showModal(row)
 }

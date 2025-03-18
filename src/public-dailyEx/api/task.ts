@@ -64,7 +64,7 @@ export default class TaskQuery extends Queryable<TaskModel, TaskQueryParams> {
   // 分页查询
   async all(params: TaskQueryParams) {
     const res = await request({
-      url: '/api/admin/task/get/page',
+      url: 'api/admin/task/get/page',
       method: 'get',
       params: {
         pageNum: params.pageNum,
@@ -89,7 +89,7 @@ export default class TaskQuery extends Queryable<TaskModel, TaskQueryParams> {
     
     try {
       const res = await request({
-        url: '/api/admin/task/save',
+        url: 'api/admin/task/save',
         method: 'post',
         data: {
           id: id || undefined,

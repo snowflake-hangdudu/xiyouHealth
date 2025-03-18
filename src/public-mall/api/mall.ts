@@ -68,7 +68,7 @@ export default class MallQuery extends Queryable<MallModel, MallQueryParams> {
   async all(params: MallQueryParams) {
     try {
       const res = await request({
-        url: '/api/admin/prod/get/page',
+        url: 'api/admin/prod/get/page',
         method: 'get',
         params: {
           pageNum: params.pageNum,
@@ -94,11 +94,11 @@ export default class MallQuery extends Queryable<MallModel, MallQueryParams> {
       const method = 'post'
       const url = 'api/admin/prod/save'
       
-      const { id, ...payload } = obj
+
       await request({
         url,
         method,
-        data: payload
+        data: obj
       })
       
       ElMessage.success(obj.id ? '修改成功' : '新增成功')

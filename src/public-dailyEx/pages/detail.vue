@@ -1,32 +1,32 @@
 <template>
   <el-dialog width="900px" ref="dialog" v-model="open" @close="close">
     <div class="all-container">
-      <el-table :data="LabList" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
-        <el-table-column prop="id" label="用户ID" align="center">
+      <el-table :data="TaskList" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
+        <el-table-column prop="id" Taskel="用户ID" align="center">
           <template #default="scope">
             {{ scope.row.id }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="name" label="用户姓名" align="center">
+        <el-table-column prop="name" Taskel="用户姓名" align="center">
           <template #default="scope">
             {{ scope.row.name }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="phone" label="用户手机号" align="center">
+        <el-table-column prop="phone" Taskel="用户手机号" align="center">
           <template #default="scope">
             {{ scope.row.phone }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="email" label="任务内容" align="center">
+        <el-table-column prop="email" Taskel="任务内容" align="center">
           <template #default="scope">
             {{ scope.row.qus }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="status" label="任务状态" align="center">
+        <el-table-column prop="status" Taskel="任务状态" align="center">
           <template #default="scope">
             <el-tag :type="getStatusType(scope.row.status)" effect="light">
               {{ getStatusText(scope.row.status) }}
@@ -34,7 +34,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="email" label="上传的任务图片" align="center">
+        <el-table-column prop="email" Taskel="上传的任务图片" align="center">
           <template #default="scope">
             <el-image :src="scope.row.email" fit="cover" />
           </template>
@@ -56,7 +56,7 @@ import { ref, defineExpose, computed } from 'vue'
 
 import http from '@/config/axios'
 import { qiniuUrl } from '@/config/qiniu'
-import LabQuery, { LabModel, LabQueryParmas } from '../../public-weekChange/api/challenge'
+import TaskQuery, { TaskModel, TaskQueryParams } from '../api/task'
 import { ElMessage } from 'element-plus'
 import refTable from '@/public/basic-table'
 
@@ -67,9 +67,9 @@ const open = ref(false)
 const id = ref<number | null>(null) // 用户ID
 
 /** 创建表格，与表格相关操作 */
-const [tb, actions] = refTable<LabModel, LabQueryParmas, LabQuery>(new LabQuery(), {})
+const [tb, actions] = refTable<TaskModel, TaskQueryParams, TaskQuery>(new TaskQuery(), {})
 
-const showModal = (row: LabModel) => {
+const showModal = (row: TaskModel) => {
   open.value = true
   if (row.id) {
     id.value = row.id
@@ -79,16 +79,13 @@ const showModal = (row: LabModel) => {
 }
 
 const savemsg = async () => {
-  if (!msg.value) {
-    ElMessage.error('请输入消息')
-    return
-  }
+
   try {
     await request({
       url: `api/admin/message/insert`,
       method: 'POST',
       data: {
-        msg: msg.value || null,
+      
         receiveId: id.value,
         receiveType: 'student'
       }
@@ -100,7 +97,7 @@ const savemsg = async () => {
   }
 }
 
-const LabList = ref<LabModel[]>([
+const TaskList = ref<TaskModel[]>([
   {
     id: 1,
     name: '腾举',
@@ -126,7 +123,7 @@ const getList = async () => {
       url: `api/admin/message/list`,
       method: 'GET'
     })
-    LabList.value = res.data
+    TaskList.value = res.data
   } catch (error) {
     ElMessage.error('获取信息失败')
   }
@@ -182,7 +179,7 @@ defineExpose({
     display: flex;
     margin-bottom: 30px;
 
-    .label {
+    .Taskel {
       width: 100px;
       text-align: right;
       margin-right: 10px;
@@ -208,7 +205,7 @@ defineExpose({
   margin: 10px 20px 0 0;
 }
 
-:deep(.my-label) {
+:deep(.my-Taskel) {
   background-color: pink;
   padding: 12px;
   width: 400px;

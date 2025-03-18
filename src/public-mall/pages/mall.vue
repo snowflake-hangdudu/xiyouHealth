@@ -40,9 +40,9 @@
         <template #default="{row}">
           <el-image 
             style="width: 50px; height: 50px" 
-            :src="row.img" 
-            :preview-src-list="[row.img]"
-          
+            :src="qiniuUrl(row.img)" 
+            :preview-src-list="[qiniuUrl(row.img)]"
+            preview-teleported="true"
           />
         </template>
       </el-table-column>
@@ -169,33 +169,17 @@ import { useValidate } from '@/hooks/web/useValidate'
 import { FormInstance } from 'element-plus'
 import Sin from '@/widget/upload-qiniu/index.vue'
 import http from '@/config/axios'
+import { qiniuUrl } from '@/config/qiniu'
 const { request } = http
 
 const [formRef, validateEditPwdSubmit] = useValidate(ref<FormInstance>())
 
 // 修改点7：初始化商品查询实例
 const [tb, actions] = refTable<MallModel, MallQueryParams, MallQuery>(
-  new MallQuery()
+  new MallQuery(),{}
 )
 
-tb.list= [
-  {
-    id: 1,
-    title: '商品1',
-    img: 'https://img.yzcdn.cn/vant/apple-1.jpg',
-    point: 100,
-    count: 100,
-    isBan: false
-  },
-  {
-    id: 2,
-    title: '商品2',
-    img: 'https://img.yzcdn.cn/vant/apple-2.jpg',
-    point: 200,
-    count: 200,
-    isBan: true
-  }
-]
+
 
 // 修改点8：状态切换处理
 const handleStatusChange = async (row: MallModel) => {

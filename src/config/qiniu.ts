@@ -1,7 +1,7 @@
 export const uploadUrl = 'https://upload-z2.qiniup.com/'
 
 /// 静态图片地址
-export const qiniuImgBasePath = 'https://bnypublic.deepmedical.net.cn/'
+export const qiniuImgBasePath = 'https://xiyou-1341378444.cos.ap-guangzhou.myqcloud.com/'
 
 //拿取token地址
 export const qiniuTokenUrl = 'api/thirdParty/qiniu/uploadToken'
@@ -22,8 +22,7 @@ export function qiniuUrl(key: string | undefined | null, size?: [number, number 
   if (!key) return ''
   if (key.startsWith('http')) return key
   const rawUrl = `${qiniuImgBasePath}${key}`
+  console.log('rawUrl', rawUrl)
   if (!size) return rawUrl
-  const width = size[0]
-  const height = size[1] ?? size[0]
-  return `${rawUrl}?imageMogr2/thumbnail/${width}x${height}/interlace/1`
+  return `${rawUrl}`
 }

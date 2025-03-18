@@ -11,6 +11,7 @@ export interface ChallengeModel {
   createdAt?: string;  // 创建时间
   updatedAt?: string;  // 更新时间
   deleted?: boolean;   // 软删除标记
+  isBan?: boolean;     // 是否上下架
 }
 
 /** 搜索条件 */
@@ -25,7 +26,8 @@ export default class ChallengeQuery extends Queryable<ChallengeModel, ChallengeQ
   get defaultObject(): Partial<ChallengeModel> {
     return {
       content: '',
-      sort: 0
+      sort: 0,
+      isBan: false
     }
   }
 
@@ -81,7 +83,8 @@ export default class ChallengeQuery extends Queryable<ChallengeModel, ChallengeQ
         data: {
           content: obj.content,
           sort: obj.sort || undefined,
-          id: obj.id || undefined
+          id: obj.id || undefined,
+          isBan: obj.isBan
         }
       })
       

@@ -6,9 +6,9 @@
        
         label-position="left"
         label-width="100px"
-        style="width: 400px; margin-left: 50px">
-        <el-form-item label="上传每日步数" prop="expressName">
-          <el-input v-model="step" placeholder="请输入每日步数" />
+        style="width: 800px; margin-left: 50px">
+        <el-form-item label="上传每日步数" prop="expressName" >
+          <el-input-number v-model="step" placeholder="请输入每日步数" style="width: 300px;" />
         </el-form-item>
       </el-form>
     </div>
@@ -35,15 +35,15 @@ const { request } = http
 
 const open = ref(false)
 const row = ref<any>({})
-const step = ref<number>(0)
+const step = ref<any>(null)
 const id = ref<number | null>(null) // 用户ID
 
 
 
 const showModal = (row: any) => {
   open.value = true
-  if (row.id) {
-    id.value = row.id
+  if (row.userId) {
+    id.value = row.userId
   } else {
     ElMessage.error('获取信息失败')
   }
@@ -56,12 +56,11 @@ const savemsg = async () => {
   }
   try {
     await request({
-      url: `api/admin/message/insert`,
+      url: `api/admin/achievement/insert/step`,
       method: 'POST',
       data: {
-        msg: msg.value || null,
-        receiveId: id.value,
-        receiveType: 'student'
+        step: step.value,
+        userId: id.value
       }
     })
     ElMessage.success('消息发送成功')
@@ -71,61 +70,9 @@ const savemsg = async () => {
   }
 }
 
-const LabList = ref<LabModel[]>([
-  {
-    id: 1,
-    name: '腾举',
-    phone: '1234567890',
-    isConnect: true,
-    email: '跑步10分钟',
-    qus: '跑步10分钟随机拍照',
-    status: 'inProgress'
-  },
-  {
-    id: 2,
-    name: '小明',
-    phone: '1234567890',
-    isConnect: false,
-    email: '跑步10分钟',
-    qus: '跑步10分钟随机拍照',
-    status: 'completed'
-  }
-])
-const getList = async () => {
-  try {
-    const res = await request({
-      url: `api/admin/message/list`,
-      method: 'GET'
-    })
-    LabList.value = res.data
-  } catch (error) {
-    ElMessage.error('获取信息失败')
-  }
-}
 
-const getStatusType = (status: string): string => {
-  switch (status) {
-    case 'inProgress':
-      return 'warning'
-    case 'completed':
-      return 'success'
 
-    default:
-      return ''
-  }
-}
 
-const getStatusText = (status: string): string => {
-  switch (status) {
-    case 'inProgress':
-      return '进行中'
-    case 'completed':
-      return '完成任务'
-
-    default:
-      return '未知状态'
-  }
-}
 
 const close = () => {}
 

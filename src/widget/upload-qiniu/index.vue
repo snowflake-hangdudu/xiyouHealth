@@ -120,12 +120,12 @@ import { qiniuUrl, qiniuTokenUrl, qiniuUploadUrl } from '@/config/qiniu'
 import { batchLimit } from '@/utils/async'
 import { getClipboardContents } from '@/utils/clipboard'
 import { blobToFile } from '@/utils/file'
-import request from '@/config/axios'
+import http from '@/config/axios'
 import axios from 'axios'
 import { useCache } from '@/hooks/web/useCache'
 import { useAppStore } from '@/store/modules/app'
 // import performanceReport from '@/utils/performanceReport'
-
+const { request } = http
 const appStore = useAppStore()
 
 const { wsCache } = useCache()
@@ -243,15 +243,15 @@ const onSelectFile = async (file: UploadFile, files: UploadFiles, replaceIndex?:
   // }
 
   // 文件大小校验
-  if (file.size! > maxSize.value) {
-    ElNotification({
-      title: '大小超过限制',
-      message: `请不要上传大于 ${(maxSize.value / 1024 / 1024).toFixed(2)}M 的文件`,
-      type: 'warning',
-      duration: 2000
-    })
-    return
-  }
+  // if (file.size! > maxSize.value) {
+  //   ElNotification({
+  //     title: '大小超过限制',
+  //     message: `请不要上传大于 ${(maxSize.value / 1024 / 1024).toFixed(2)}M 的文件`,
+  //     type: 'warning',
+  //     duration: 2000
+  //   })
+  //   return
+  // }
 
   uploading.value = true
 
@@ -274,22 +274,17 @@ const onSelectFile = async (file: UploadFile, files: UploadFiles, replaceIndex?:
     const token = wsCache.get('admin-token')
     if (!token) throw new Error("Token 缺失");
     formData.append('file', file.raw as File)
-
-
- 
-
     try {
-         // 使用 Axios 发送 POST 请求
-         const response = await axios({
-            url: qiniuUploadUrl,
-            method: 'post',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data' // 表明请求体是 form-data 类型
-            },
-            data: formData
-        });
-      upload_key.value = response.data.key
+        const response =await request({
+          url: 'api/thirdParty/cos/upload',
+          method: 'post',
+          headers: {
+              'Content-Type': 'multipart/form-data' // 表明请求体是 form-data 类型
+          },
+          data: formData
+        })
+       console.log(response.data,'yes')
+      upload_key.value = response.data
     } catch (error) {
       console.error(error)
       ElNotification({
