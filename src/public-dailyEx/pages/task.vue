@@ -154,7 +154,9 @@ import { Plus } from '@element-plus/icons-vue'
 import TaskQuery, { TaskModel, TaskQueryParams } from '../api/task'
 import { ElMessage } from 'element-plus'
 import { useValidate } from '@/hooks/web/useValidate'
+import { FormInstance } from 'element-plus'
 import http from '@/config/axios'
+
 
 const { request } = http
 
@@ -162,7 +164,7 @@ const [formRef, validateEditPwdSubmit] = useValidate(ref<FormInstance>())
 
 // 初始化表格
 const [tb, actions] = refTable<TaskModel, TaskQueryParams, TaskQuery>(
-  new TaskQuery()
+  new TaskQuery(),{}
 
 )
 
