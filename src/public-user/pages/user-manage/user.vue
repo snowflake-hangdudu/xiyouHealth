@@ -59,7 +59,12 @@
       <el-table-column prop="isTeam" label="是否已组队" align="center">
         <!-- 修改为 isTeam，与 UserModel 对应 -->
         <template #default="scope">
-          <el-switch v-model="scope.row.isTeam" disabled></el-switch>
+          <el-tag 
+      :type="scope.row.isTeam  ? 'success' : 'danger'" 
+      effect="plain"
+    >
+      {{ scope.row.isTeam  ? '已组队' : '未组队' }}
+    </el-tag>
         </template>
       </el-table-column>
 
@@ -111,7 +116,7 @@
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button @click="openGroup(scope.row)" link type="primary">组队</el-button>
-          <el-button @click="openNews(scope.row)" link type="primary">绑定任务</el-button>
+          <el-button @click="openTask(scope.row)" link type="primary">绑定任务</el-button>
           <el-button @click="openNews(scope.row)" link type="primary">发送消息</el-button>
         </template>
       </el-table-column>

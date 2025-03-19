@@ -16,6 +16,7 @@ const appStore = useAppStore()
 
 const { wsCache } = useCache()
 const PATH_URL = config.mainServicePath
+console.log('PATH_URL', PATH_URL)
 
 // 创建axios实例
 const service: AxiosInstance = axios.create({

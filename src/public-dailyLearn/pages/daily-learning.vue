@@ -23,7 +23,16 @@
       <!-- Content Column -->
       <el-table-column prop="content" label="内容(视频)" align="center">
         <template #default="scope">
-          <el-image :src="scope.row.content" fit="cover" />
+          <video 
+      :src="qiniuUrl(scope.row.content)"  
+      controls 
+      style="max-width: 200px; height: 100px; object-fit: cover;"
+      preload="metadata"
+    >
+      <!-- 兼容性提示 -->
+      <source :src="scope.row.content"  type="video/mp4">
+   
+    </video>
         </template>
       </el-table-column>
 
@@ -168,29 +177,6 @@ const [tb, actions] = refTable<HealthContentModel, HealthContentQueryParams, Hea
   {}
 )
 
-// 模拟数据调整字段
-tb.list = [
-  {
-    id: 1,
-    title: '健康教育内容1',
-    content: '',
-    isBan: false,
-    question: '你今天锻炼了吗',
-    answer: true,
-    sort: 1,
-    createdAt: '2024-01-01 12:00:00'
-  },
-  {
-    id: 2,
-    title: '健康教育内容2',
-    content: '',
-    isBan: true,
-    question: '你今天运动了吗',
-    answer: false,
-    sort: 2,
-    createdAt: '2024-02-02 13:00:00'
-  }
-]
 
 const changeOnline = async(id) => {
  await request({

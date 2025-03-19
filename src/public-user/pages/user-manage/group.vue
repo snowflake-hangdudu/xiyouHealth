@@ -5,13 +5,13 @@
         <div class="user-info">
           <!-- 备注 -->
           <div class="info-item">
-            <span class="label" style="display: flex; align-items: center">关联用户：</span>
+            <span class="label" style="display: flex; align-items: center">组队：</span>
             <span class="value">
-              <el-select v-model="userId" style="width: 500px">
+              <el-select v-model="userId" style="width: 500px" clearable >
                 <el-option
                   v-for="item in userList"
                   :key="item.id"
-                  :label="item.name + (item.isConnect ? '(已关联)' : '')"
+                  :label="item.name"
                   :value="item.id"
                 ></el-option>
               </el-select>
@@ -31,19 +31,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineExpose, computed } from 'vue'
+import { ref, defineExpose, computed, onMounted } from 'vue'
 import http from '@/config/axios'
 import { UserModel } from '../../api/user'
 import { qiniuUrl } from '@/config/qiniu'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox} from 'element-plus'
 
 const { request } = http
 
 const open = ref(false)
 
 const id = ref<number | null>(null) // 用户ID
-const userId = ref<number | null>(1) // 用户ID
-
+const userId = ref<number | null>() // 用户ID
+const userList = ref<UserModel[]>([])
+onMounted(() => {
+  getList()
+})
 const showModal = (row: UserModel) => {
   if (row.id) {
     id.value = row.id
@@ -87,14 +90,12 @@ const savemsg = async () => {
 const getList = async () => {
   try {
     const res = await request({
-      url: `api/admin/user/get/page`,
+      url: `api/common/get/user/list`,
       method: 'GET',
-      params: {
-        pageNum: 1,
-        pageSize: 999
-      }
     })
+    console.log('res.data', res)
     userList.value = res.data
+    console.log('userList', userList.value)
   } catch (error) {
     ElMessage.error('获取信息失败')
   }

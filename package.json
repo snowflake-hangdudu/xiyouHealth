@@ -7,6 +7,7 @@
   "scripts": {
     "i": "pnpm install",
     "dev": "vite --mode base",
+    "sit":"vite --mode sit",
     "dev-p": "vite --mode dev-p",
     "ts:check": "vue-tsc --noEmit",
     "build:prod": "vite build --mode prod",

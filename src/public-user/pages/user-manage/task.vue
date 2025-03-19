@@ -7,8 +7,15 @@
           <div class="info-item">
             <span class="label" style="display: flex; align-items: center">关联任务：</span>
             <span class="value">
-              <el-select v-model="userId" style="width: 500px">
-                <el-option v-for="item in userList" :key="item.id" :label="item.name + '  (' + item.type + ')'" :value="item.id"></el-option>
+              <el-select v-model="taskIds" style="width: 500px" multiple clearable >
+                <el-option 
+  v-for="item in taskList"
+  :key="item.id" 
+  :label="`${item.content}(${item.type  === 'in' ? '室内任务' : '室外任务'})`"
+  :value="item.id" 
+>
+</el-option>
+                
               </el-select>
             </span>
           </div>
@@ -26,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineExpose, computed } from 'vue'
+import { ref, defineExpose, computed,onMounted } from 'vue'
 import http from '@/config/axios'
 import { UserModel } from '../../api/user'
 import { qiniuUrl } from '@/config/qiniu'
@@ -35,14 +42,18 @@ import { ElMessage } from 'element-plus'
 const { request } = http
 
 const open = ref(false)
-
+onMounted(() => {
+  getList()
+})  
 const id = ref<number | null>(null) // 用户ID
-const userId = ref<number | null>(1) // 用户ID
+
+const taskIds = ref<any>([])
+const taskList = ref<any>([])
 
 const showModal = (row: UserModel) => {
   if (row.id) {
     id.value = row.id
-
+    getTaskList()
     open.value = true
   } else {
     ElMessage.error('获取信息失败')
@@ -50,65 +61,47 @@ const showModal = (row: UserModel) => {
 }
 
 const savemsg = async () => {
-  if (!msg.value) {
-    ElMessage.error('请输入消息')
-    return
-  }
   try {
     await request({
-      url: `api/admin/message/insert`,
+      url: `api/admin/task/bind`,
       method: 'POST',
       data: {
-        msg: msg.value || null,
-        receiveId: id.value,
-        receiveType: 'student'
+        taskIdList: taskIds.value || null,
+       userId: id.value
       }
     })
-    ElMessage.success('消息发送成功')
+    ElMessage.success('绑定任务成功')
     open.value = false
   } catch (error) {
-    ElMessage.error('消息发送失败')
+    ElMessage.error('绑定任务失败')
   }
 }
 
-const userList = ref<UserModel[]>([
-  {
-    id: 1,
-    name: '任务1',
-    phone: '1234567890',
-    isConnect: true,
-    type: '室内'
-  },
-  {
-    id: 2,
-    name: '任务2',
-    phone: '1234567890',
-    isConnect: false,
-    type: '室外'
-  },
-  {
-    id: 1,
-    name: '任务3',
-    phone: '1234567890',
-    isConnect: true,
-    type: '室内'
-  },
-  {
-    id: 1,
-    name: '任务4',
-    phone: '1234567890',
-    isConnect: true,
-    type: '室外'
-  }
-  //... more user data...
-])
+
 const getList = async () => {
   try {
     const res = await request({
-      url: `api/admin/message/list`,
+      url: `api/common/get/task/list`,
       method: 'GET'
     })
-    userList.value = res.data
+    taskList.value = res.data
+    console.log(taskList.value,'taskList')
+  } catch (error) {
+    ElMessage.error('获取信息失败')
+  }
+}
+
+const getTaskList = async () => {
+  try {
+    const res = await request({
+      url: `api/admin/task/get/bind/list`,
+      method: 'GET',
+      params: {
+        userId: id.value
+      }
+    })
+    taskIds.value = res.data.map((item: any) => item.id)
+    console.log(taskList.value,'taskList')
   } catch (error) {
     ElMessage.error('获取信息失败')
   }

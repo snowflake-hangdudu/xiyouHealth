@@ -4,7 +4,7 @@ const baseUrl: {
   base: Services
   dev: Services
   pro: Services
-  test: Services
+  sit: Services
 } = {
   // 开发环境接口前缀
   base: {
@@ -13,21 +13,21 @@ const baseUrl: {
 
   // 打包开发环境接口前缀
   dev: {
-    main: '/'
+    main: ''
   },
 
   // 打包生产环境接口前缀
   pro: {
-    main: '/'
+    main: ''
   },
 
   // 打包测试环境接口前缀
-  test: {
-    main: '/'
+  sit: {
+    main: 'http://124.222.23.240/xi_you/'
   }
 }
 
-const service = baseUrl[import.meta.env.VITE_API_BASEPATH]
+const service = baseUrl[import.meta.env.MODE]
 console.log('service: ', service)
 
 const config: {
