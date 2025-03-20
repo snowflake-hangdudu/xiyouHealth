@@ -25,6 +25,7 @@
       </el-input>
 
       <div style="display: flex; flex: 1; justify-content: flex-end">
+        <el-button class="filter-item" type="primary"  @click="actions.add()">导出兑换人信息</el-button>
         <el-button class="filter-item" type="primary" :icon="Plus" @click="actions.add()">添加商品</el-button>
       </div>
     </div>

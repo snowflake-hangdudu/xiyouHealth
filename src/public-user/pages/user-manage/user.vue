@@ -84,12 +84,12 @@
 
    
 
-      <el-table-column prop="isShowVideo" label="是否展示运动任务" align="center">
-        <!-- 修改为 isShowVideo，与 UserModel 对应 -->
+      <!-- <el-table-column prop="isUnlockTask" label="是否展示运动任务" align="center">
+      
         <template #default="scope">
-          <el-switch v-model="scope.row.isShowVideo" disabled></el-switch>
+          <el-switch v-model="scope.row.isUnlockTask" disabled></el-switch>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
 
       <el-table-column prop="totalPoint" label="累计积分" align="center">
@@ -240,7 +240,7 @@ const newsRef = ref<any>(null)
 const isShow =async (row) => {
   await request({
     url: `api/admin/user/video/${row.id}`,
-    method: 'post',
+    method: 'put',
   }).then((res) => {
     ElMessage.success('操作成功')
     actions.queryAll()

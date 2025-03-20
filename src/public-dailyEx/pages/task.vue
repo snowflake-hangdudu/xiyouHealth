@@ -25,7 +25,7 @@
         <el-option label="室内任务" value="in" />
       </el-select>
 
-      <div   class="filter-item">展示室内任务</div>
+      <div   class="filter-item">展示明天室内任务</div>
       <el-switch
         class="filter-item"
       
@@ -36,6 +36,7 @@
       />
 
       <div style="display: flex; flex: 1; justify-content: flex-end">
+        <el-button class="filter-item" type="primary"  @click="">导出完成运动任务天数</el-button>
         <el-button class="filter-item" type="primary" :icon="Plus" @click="actions.add()">新建运动任务</el-button>
       </div>
     </div>
