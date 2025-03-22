@@ -33,7 +33,7 @@
       />
 
       <div style="display: flex; flex: 1; justify-content: flex-end">
-        <el-button class="filter-item" type="primary"  @click="">导出完成运动任务天数</el-button>
+        <el-button class="filter-item" type="primary"  @click="openExport()">导出完成运动任务天数</el-button>
         <el-button class="filter-item" type="primary" :icon="Plus" @click="actions.add()">新建运动任务</el-button>
       </div>
     </div>
@@ -141,6 +141,7 @@
       </template>
     </el-dialog>
     <Detail ref="detailRef" @close="actions.queryAll()" />
+    <Export ref="exportRef" @close="actions.queryAll()" />
   </div>
 </template>
 
@@ -148,6 +149,7 @@
 import refTable from '@/public/basic-table'
 import { ref,onMounted } from 'vue'
 import Detail from './detail.vue'
+import Export from './export.vue'
 import { Plus } from '@element-plus/icons-vue'
 import TaskQuery, { TaskModel, TaskQueryParams } from '../api/task'
 import { ElMessage } from 'element-plus'
@@ -217,8 +219,13 @@ const getIndoor=async()=>{
 }
 
 const detailRef = ref<any>(null)
+const exportRef = ref<any>(null)
 
 const openDetail = (row: any) => {
   detailRef.value.showModal(row)
+}
+
+const openExport = () => {
+  exportRef.value.showModal()
 }
 </script>

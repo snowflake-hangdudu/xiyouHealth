@@ -25,7 +25,7 @@
       </el-input>
 
       <div style="display: flex; flex: 1; justify-content: flex-end">
-        <el-button class="filter-item" type="primary"  @click="actions.add()">导出兑换人信息</el-button>
+        <el-button class="filter-item" type="primary"  @click="exportExcel">导出兑换人信息</el-button>
         <el-button class="filter-item" type="primary" :icon="Plus" @click="actions.add()">添加商品</el-button>
       </div>
     </div>
@@ -171,6 +171,7 @@ import { FormInstance } from 'element-plus'
 import Sin from '@/widget/upload-qiniu/index.vue'
 import http from '@/config/axios'
 import { qiniuUrl } from '@/config/qiniu'
+import exportCel from '@/utils/excel'
 const { request } = http
 
 const [formRef, validateEditPwdSubmit] = useValidate(ref<FormInstance>())
@@ -192,18 +193,27 @@ const handleStatusChange = async (row: MallModel) => {
   actions.queryAll({ resetPage: true })
 }
 
-// 修改点9：删除处理
-const handleDelete = (row: MallModel) => {
-  ElMessageBox.confirm(`确认删除【${row.title}】？`, '提示', {
-    type: 'warning'
-  }).then(async () => {
-    try {
-      await tb.source.deleteObj(row)
-      ElMessage.success('删除成功')
-      actions.queryAll()
-    } catch (e) {
-      ElMessage.error('删除失败')
-    }
-  })
+const exportExcel = async () => {
+  // 表头配置 
+let headers = [ 
+  { label: '姓名', value: 'name', width: 15 }, 
+  { label: '手机号', value: 'phone', width: 20 }, 
+  { label: '兑换商品名称', value: 'productName', width: 25 }, 
+  { label: '所需积分', value: 'points', width: 12 }, 
+  { label: '兑换时间', value: 'exchangeTime', width: 18 } 
+]; 
+// 模拟数据 
+let mockData = [ 
+  { name: '张三', phone: '13800138000', productName: '保温杯', points: 500, exchangeTime: '2024-01-01' }, 
+  { name: '李四', phone: '13900139000', productName: '雨伞', points: 300, exchangeTime: '2024-01-02' }, 
+  { name: '王五', phone: '13700137000', productName: '充电宝', points: 800, exchangeTime: '2024-01-03' } 
+]; 
+exportCel('兑换信息', headers, mockData, '兑换信息');
+  // await request({
+  //   url: `api/admin/prod/export`,
+  //   method: 'get',
+  //   responseType: 'blob',
+  // })
+  // ElMessage.success('导出成功')
 }
 </script>
