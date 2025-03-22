@@ -28,10 +28,7 @@
       <div   class="filter-item">展示明天室内任务</div>
       <el-switch
         class="filter-item"
-      
-        v-model="open"
-        :active-value="false"
-        :inactive-value="true"
+        v-model="openDoor"
         @change="changeType()"
       />
 
@@ -149,7 +146,7 @@
 
 <script lang="ts" setup>
 import refTable from '@/public/basic-table'
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import Detail from './detail.vue'
 import { Plus } from '@element-plus/icons-vue'
 import TaskQuery, { TaskModel, TaskQueryParams } from '../api/task'
@@ -171,6 +168,11 @@ const [tb, actions] = refTable<TaskModel, TaskQueryParams, TaskQuery>(
 
 const open=ref(false)
 
+onMounted(() => {
+  getIndoor()
+  
+})
+
 
 
 const changeOnline = async (row: TaskModel) => {
@@ -189,15 +191,28 @@ const changeOnline = async (row: TaskModel) => {
 const changeType = async () => {
   try {
     await request({
-      url: `api/admin/task/indoor`,
-      method: 'PUT',
-      data: {
-        open: open.value
-      }
+      url: `api/admin/task/set/indoor`,
+      method: 'POST',
+
     })
     ElMessage.success('操作成功')
   } catch (error) {
     ElMessage.error('操作失败')
+  }
+}
+
+
+const openDoor=ref(false)
+const getIndoor=async()=>{
+  try {
+   let res =  await request({
+      url: `api/admin/task/get/indoor`,
+      method: 'GET',
+    })
+    openDoor.value = res.data
+    console.log(openDoor.value,res.data,'open')
+  } catch (error) {
+   
   }
 }
 

@@ -1,10 +1,10 @@
 <template>
   <el-dialog width="900px" ref="dialog" v-model="open" @close="close">
     <div class="all-container">
-      <el-table :data="LabList" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
+      <el-table :data="tb.list" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
         <el-table-column prop="id" label="用户ID" align="center">
           <template #default="scope">
-            {{ scope.row.id }}
+            {{ scope.row.userId }}
           </template>
         </el-table-column>
 
@@ -22,22 +22,34 @@
 
         <el-table-column prop="email" label="题目" align="center">
           <template #default="scope">
-            {{ scope.row.qus }}
+            {{ scope.row.question }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="email" label="答案" align="center">
+        <el-table-column prop="email" label="题目答案" align="center">
           <template #default="scope">
-            {{ scope.row.res ? '是' : '否' }}
+            {{ scope.row.questionAnswer ? '是' : '否' }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="email" label="回答" align="center">
+        <el-table-column prop="email" label="用户答案" align="center">
           <template #default="scope">
-            {{ scope.row.ans ? '是' : '否' }}
+            {{ scope.row.userAnswer ? '是' : '否' }}
           </template>
         </el-table-column>
       </el-table>
+
+      <div class="pagination-container" v-if="tb.total">
+      <el-pagination
+        v-model:current-page="tb.query.pageNum"
+        :page-sizes="[5, 20, 30, 50, 100, 200]"
+        v-model:page-size="tb.query.pageSize"
+        :total="tb.total"
+        background
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="(v) => actions.sizeChange(v)"
+        @current-change="(v) => actions.pageChange(v)" />
+    </div>
     </div>
 
     <template #footer>
@@ -54,7 +66,7 @@ import { ref, defineExpose, computed } from 'vue'
 
 import http from '@/config/axios'
 import { qiniuUrl } from '@/config/qiniu'
-import LabQuery, { LabModel, LabQueryParmas } from '../../public-weekChange/api/challenge'
+import InfoQuery, { InfoModel, InfoQueryParams } from '../api/info'
 import { ElMessage } from 'element-plus'
 import refTable from '@/public/basic-table'
 
@@ -65,12 +77,14 @@ const open = ref(false)
 const id = ref<number | null>(null) // 用户ID
 
 /** 创建表格，与表格相关操作 */
-const [tb, actions] = refTable<LabModel, LabQueryParmas, LabQuery>(new LabQuery(), {})
+const [tb, actions] = refTable<InfoModel,InfoQueryParams, InfoQuery>(new InfoQuery(), {})
 
-const showModal = (row: LabModel) => {
+const showModal = (row: InfoModel) => {
   open.value = true
   if (row.id) {
     id.value = row.id
+    tb.query.recordId = row.id
+    actions.queryAll({resetPage: true})
   } else {
     ElMessage.error('获取信息失败')
   }
@@ -98,41 +112,7 @@ const savemsg = async () => {
   }
 }
 
-const LabList = ref<LabModel[]>([
-  {
-    id: 1,
-    name: '腾举',
-    phone: '1234567890',
-    isConnect: true,
-    email: '跑步10分钟',
-    qus: '你今天锻炼了吗',
-    que: true,
-    ans: true,
-    res: true
-  },
-  {
-    id: 2,
-    name: '小明',
-    phone: '1234567890',
-    isConnect: false,
-    email: '跑步10分钟',
-    qus: '你今天锻炼了吗',
-    que: true,
-    ans: true,
-    res: false
-  }
-])
-const getList = async () => {
-  try {
-    const res = await request({
-      url: `api/admin/message/list`,
-      method: 'GET'
-    })
-    LabList.value = res.data
-  } catch (error) {
-    ElMessage.error('获取信息失败')
-  }
-}
+
 
 const close = () => {}
 
