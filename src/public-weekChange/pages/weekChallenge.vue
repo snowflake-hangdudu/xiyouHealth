@@ -109,7 +109,7 @@ const [editPwdRef, validateEditPwdSubmit] = useValidate(ref<FormInstance>())
 /** 创建表格，与表格相关操作 */
 const [tb, actions] = refTable<ChallengeModel,ChallengeQueryParams, ChallengeQuery>(new ChallengeQuery(),{})
 
-const bindUserOptions = ref<any[]>([])
+
 onMounted(() => {
  
 })

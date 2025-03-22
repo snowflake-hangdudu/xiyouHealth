@@ -1,10 +1,10 @@
 <template>
   <el-dialog width="900px" ref="dialog" v-model="open" @close="close">
     <div class="all-container">
-      <el-table :data="LabList" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
+      <el-table :data="tb.list" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
         <el-table-column prop="id" label="用户ID" align="center">
           <template #default="scope">
-            {{ scope.row.id }}
+            {{ scope.row.userId }}
           </template>
         </el-table-column>
 
@@ -20,9 +20,9 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="email" label="每周挑战内容" align="center">
+        <el-table-column prop="content" label="每周挑战内容" align="center">
           <template #default="scope">
-            {{ scope.row.email }}
+            {{ scope.row.content }}
           </template>
         </el-table-column>
 
@@ -34,9 +34,9 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="email" label="挑战完成图片" align="center">
+        <el-table-column prop="content" label="挑战完成图片" align="center">
           <template #default="scope">
-            <el-image :src="qiniuUrl + scope.row.email" style="max-width: 100px; max-height: 100px"></el-image>
+            <el-image :src="qiniuUrl + scope.row.img" style="max-width: 100px; max-height: 100px"></el-image>
           </template>
         </el-table-column>
       </el-table>
@@ -56,7 +56,7 @@ import { ref, defineExpose, computed } from 'vue'
 
 import http from '@/config/axios'
 import { qiniuUrl } from '@/config/qiniu'
-import LabQuery, { LabModel, LabQueryParmas } from '../api/challenge'
+import InfoQuery, { InfoModel, InfoQueryParams } from '../api/info'
 import { ElMessage } from 'element-plus'
 import refTable from '@/public/basic-table'
 
@@ -67,12 +67,14 @@ const open = ref(false)
 const id = ref<number | null>(null) // 用户ID
 
 /** 创建表格，与表格相关操作 */
-const [tb, actions] = refTable<LabModel, LabQueryParmas, LabQuery>(new LabQuery(), {})
+const [tb, actions] = refTable<InfoModel, InfoQueryParams, InfoQuery>(new InfoQuery(), {})
 
-const showModal = (row: LabModel) => {
+const showModal = (row: InfoModel) => {
   open.value = true
   if (row.id) {
     id.value = row.id
+    tb.query.recordId = row.id
+    actions.queryAll({resetPage: true})
   } else {
     ElMessage.error('获取信息失败')
   }
@@ -100,37 +102,9 @@ const savemsg = async () => {
   }
 }
 
-const LabList = ref<LabModel[]>([
-  {
-    id: 1,
-    name: '腾举',
-    phone: '1234567890',
-    isConnect: true,
-    email: '跑步10分钟',
-    que: true,
-    status: 'inProgress'
-  },
-  {
-    id: 2,
-    name: '小明',
-    phone: '1234567890',
-    isConnect: false,
-    email: '跑步10分钟',
-    que: true,
-    status: 'completed'
-  }
-])
-const getList = async () => {
-  try {
-    const res = await request({
-      url: `api/admin/message/list`,
-      method: 'GET'
-    })
-    LabList.value = res.data
-  } catch (error) {
-    ElMessage.error('获取信息失败')
-  }
-}
+
+
+
 
 const getStatusType = (status: string): string => {
   switch (status) {
