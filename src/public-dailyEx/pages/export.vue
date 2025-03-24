@@ -40,12 +40,7 @@ const [tb, actions] = refTable<InfoModel, InfoQueryParams, InfoQuery>(new InfoQu
 
 const showModal = (row: InfoModel) => {
   open.value = true
-  if (row.id) {
-    id.value = row.id
-  
-  } else {
-    ElMessage.error('获取信息失败')
-  }
+
 }
 
 const exportExcel = async () => {
@@ -54,60 +49,34 @@ const exportExcel = async () => {
     ElMessage.error('请选择时间范围')
     return
   }
-  let headers = [ 
-  { label: '姓名', value: 'name', width: 15 }, 
-  { label: '手机号', value: 'phone', width: 20 }, 
-  { label: '任务名称', value: 'taskName', width: 25 }, 
-  { label: '任务状态', value: 'status', width: 12 }, 
-  { label: '任务开启时间', value: 'openTime', width: 18 } ,
-  { label: '任务完成时间', value: 'overTime', width: 18 } 
 
-]; 
+let res = await request({
+    url: `api/admin/task/get/excel/list`,
+    method: 'GET',
+    data: {
+      startTime: timeRange.value[0],
+      endTime: timeRange.value[1]
+    }
+  })
 
+  let mockData = [
+
+
+  {
+    userId: 1003,
+    name: "王强",
+    phone: "15944556677",  // 移动号段(159开头)[3]()
+    dataMap: {
+      "3月22日": true,
+      "3月23日": false,
+      "3月24日": true 
+    },
+  }
+];
  
-// 模拟数据 
-let mockData = [ 
-  { 
-    name: '张三', 
-    phone: '13800138000', 
-    taskName: '文档整理任务', 
-    status: '已完成', 
-    openTime: '2024-01-01 09:00', 
-    overTime: '2024-01-01 12:00' 
-  }, 
-  { 
-    name: '李四', 
-    phone: '13900139000', 
-    taskName: '会议筹备任务', 
-    status: '进行中', 
-    openTime: '2024-01-02 10:00', 
-    overTime: '' 
-  }, 
-  { 
-    name: '王五', 
-    phone: '13700137000', 
-    taskName: '数据录入任务', 
-    status: '未开始', 
-    openTime: '', 
-    overTime: '' 
-  } 
-]; 
  
 exportCel('任务完成信息', headers, mockData, '任务完成信息');
-  // try {
-  //   await request({
-  //     url: `api/admin/message/export`,
-  //     method: 'POST',
-  //     data: {
-  //       startTime: timeRange[0],
-  //       endTime: timeRange[1]
-  //     }
-  //   })
-  //   ElMessage.success('导出成功')
-  //   open.value = false
-  // } catch (error) {
-  //   ElMessage.error('导出失败')
-  // }
+
 }
 
 

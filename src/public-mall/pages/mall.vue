@@ -199,15 +199,24 @@ let headers = [
   { label: '姓名', value: 'name', width: 15 }, 
   { label: '手机号', value: 'phone', width: 20 }, 
   { label: '兑换商品名称', value: 'productName', width: 25 }, 
-  { label: '所需积分', value: 'points', width: 12 }, 
-  { label: '兑换时间', value: 'exchangeTime', width: 18 } 
+  { label: '所需积分', value: 'point', width: 12 }, 
+  { label: '兑换时间', value: 'createdAt', width: 18 } 
 ]; 
-// 模拟数据 
-let mockData = [ 
-  { name: '张三', phone: '13800138000', productName: '保温杯', points: 500, exchangeTime: '2024-01-01' }, 
-  { name: '李四', phone: '13900139000', productName: '雨伞', points: 300, exchangeTime: '2024-01-02' }, 
-  { name: '王五', phone: '13700137000', productName: '充电宝', points: 800, exchangeTime: '2024-01-03' } 
-]; 
+
+  let res = await request({
+    url: `api/admin/prod/get/excel/list`,
+    method: 'GET',
+
+  })
+  let mockData = res.data.map((item: any) => {
+    return {
+      name: item.userInfo.name,
+      phone: item.userInfo.phone,
+      productName: item.productName,
+      point: item.point,
+    createdAt: item.createdAt,
+    }
+  })
 exportCel('兑换信息', headers, mockData, '兑换信息');
   // await request({
   //   url: `api/admin/prod/export`,
