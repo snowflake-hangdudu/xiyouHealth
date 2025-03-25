@@ -9,7 +9,6 @@
           start-placeholder="开始时间"
           end-placeholder="结束时间"
           @change="actions.queryAll({ resetPage: true })" />
-
     <template #footer>
       <div class="foot" style="display: flex; justify-content: space-evenly; margin: 20px 0 40px 0">
         <el-button @click="open = false" size="large" style="width: 120px">关闭弹窗</el-button>
@@ -21,11 +20,11 @@
 
 <script setup lang="ts">
 import { ref, defineExpose, computed } from 'vue'
-
 import http from '@/config/axios'
 import { qiniuUrl } from '@/config/qiniu'
 import InfoQuery, { InfoModel, InfoQueryParams } from '../api/info'
 import { ElMessage } from 'element-plus'
+
 import refTable from '@/public/basic-table'
 import exportCel from '@/utils/excel'
 
@@ -58,24 +57,27 @@ let res = await request({
       endTime: timeRange.value[1]
     }
   })
+  let mockData = res.data.map(item  => { 
+    // 获取任务时间列表 
+    const taskTimes = Object.keys(item.userTaskRecordList);  
+    // 计算任务完成天数 
+    const completedDays = Object.values(item.userTaskRecordList).filter(record  => record.status  === 'over').length; 
+ 
+    return { 
+      'name': item.name,  
+      'phone': item.phone,  
+      'taskName': item.question,  // 假设 question 是任务名称 
+      '任务时间': taskTimes.join(',  '), 
+      '任务完成天数': completedDays 
+    }; 
+  }); 
 
-  let mockData = [
-
-
-  {
-    userId: 1003,
-    name: "王强",
-    phone: "15944556677",  // 移动号段(159开头)[3]()
-    dataMap: {
-      "3月22日": true,
-      "3月23日": false,
-      "3月24日": true 
-    },
-  }
-];
+ 
+  // 导出 Excel 
+  exportCel('任务完成信息', headers, mockData, '任务完成信息'); 
  
  
-exportCel('任务完成信息', headers, mockData, '任务完成信息');
+
 
 }
 

@@ -77,18 +77,17 @@
       </el-table-column>
     </el-table>
 
-    <!-- 分页组件 -->
-    <div class="pagination-container">
+  <!-- 翻页 -->
+  <div class="pagination-container" v-if="tb.total">
       <el-pagination
         v-model:current-page="tb.query.pageNum"
+        :page-sizes="[5, 20, 30, 50, 100, 200]"
         v-model:page-size="tb.query.pageSize"
         :total="tb.total"
-        :page-sizes="[5, 20, 30, 50, 100, 200]"
-        layout="total, sizes, prev, pager, next, jumper"
         background
-        @size-change="actions.sizeChange"
-        @current-change="actions.pageChange"
-      />
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="(v: number) => actions.sizeChange(v)"
+        @current-change="(v: number) => actions.pageChange(v)" />
     </div>
 
     <!-- 编辑弹窗 -->

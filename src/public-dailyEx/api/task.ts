@@ -34,12 +34,15 @@ export default class TaskQuery extends Queryable<TaskModel, TaskQueryParams> {
     }
   }
 
+
+
   _valueGetter: () => Partial<TaskModel> = () => ({})
   
   get currentEditRow(): Partial<TaskModel> {
     return this._valueGetter()
   }
 
+  
   get rules() {
     return {
       content: [

@@ -38,7 +38,7 @@
 
       <el-table-column prop="userInfo" label="反馈人信息" align="center" width="200">
         <template #default="scope">
-          {{ scope.row.user ? scope.Row.user.id + ' ' + scope.Row.user.name + ' (' + scope.Row.user.phone + ')' : '未知用户' }}
+          {{ scope.row.user ?   scope.row.user.name :'' }}
         </template>
       </el-table-column>
     </el-table>

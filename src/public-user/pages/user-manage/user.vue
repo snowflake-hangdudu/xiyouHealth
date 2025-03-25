@@ -122,12 +122,17 @@
       </el-table-column>
     </el-table>
 
-    <!-- 翻页 -->
-    <div class="pagination-container" v-if="tb.total">
-      <el-pagination v-model:current-page="tb.query.pageNum" :page-sizes="[5, 20, 30, 50, 100, 200]"
-        v-model:page-size="tb.query.pageSize" :total="tb.total" background
-        layout="total, sizes, prev, pager, next, jumper" @size-change="actions.sizeChange"
-        @current-change="actions.pageChange" />
+        <!-- 翻页 -->
+        <div class="pagination-container" v-if="tb.total">
+      <el-pagination
+        v-model:current-page="tb.query.pageNum"
+        :page-sizes="[5, 20, 30, 50, 100, 200]"
+        v-model:page-size="tb.query.pageSize"
+        :total="tb.total"
+        background
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="(v: number) => actions.sizeChange(v)"
+        @current-change="(v: number) => actions.pageChange(v)" />
     </div>
   </div>
   <!-- 备注弹窗 -->
