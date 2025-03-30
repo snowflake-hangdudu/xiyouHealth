@@ -57,20 +57,22 @@ let res = await request({
       endTime: timeRange.value[1]
     }
   })
+  let arr:any = []
   let mockData = res.data.map(item  => { 
-    // 获取任务时间列表 
-    const taskTimes = Object.keys(item.userTaskRecordList);  
-    // 计算任务完成天数 
-    const completedDays = Object.values(item.userTaskRecordList).filter(record  => record.status  === 'over').length; 
- 
-    return { 
-      'name': item.name,  
-      'phone': item.phone,  
-      'taskName': item.question,  // 假设 question 是任务名称 
-      '任务时间': taskTimes.join(',  '), 
-      '任务完成天数': completedDays 
-    }; 
+    if(item.userTaskRecordList && item.userTaskRecordList.length > 0){
+      item.userTaskRecordList.forEach(element => {
+        arr.push({
+          name: item.name,
+          phone: item.phone,
+          [item.createdAt]:element.createdAt,
+          status: element.status == 'over' ? '已完成' : '未完成',
+        })
+      });
+      
+    }
+  
   }); 
+
 
  
   // 导出 Excel 

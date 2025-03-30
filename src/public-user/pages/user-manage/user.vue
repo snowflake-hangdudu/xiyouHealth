@@ -49,12 +49,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="password" label="是否设置密码" align="center">
-        <!-- 修改为 password 判断是否设置密码 -->
+      <!-- <el-table-column prop="password" label="是否设置密码" align="center">
+ 
         <template #default="scope">
           <el-switch v-model="scope.row.password" disabled></el-switch>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column prop="isTeam" label="是否已组队" align="center">
         <!-- 修改为 isTeam，与 UserModel 对应 -->
@@ -78,7 +78,16 @@
       <el-table-column prop="isUnlockTask" label="是否解锁当日任务内容" align="center">
         <!-- 修改为 isUnlockTask，与 UserModel 对应 -->
         <template #default="scope">
-          <el-switch v-model="scope.row.isUnlockTask" disabled></el-switch>
+          <el-switch v-model="scope.row.isUnlockTask" 
+          @change="changeTask(scope.row)"></el-switch>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="isChallenge" label="是否开启挑战" align="center">
+   
+        <template #default="scope">
+          <el-switch v-model="scope.row.isChallenge" 
+          @change="changeWeekChange(scope.row)"></el-switch>
         </template>
       </el-table-column>
 
@@ -113,11 +122,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="250"> 
         <template #default="scope">
           <el-button @click="openGroup(scope.row)" link type="primary">组队</el-button>
           <el-button @click="openTask(scope.row)" link type="primary">绑定任务</el-button>
           <el-button @click="openNews(scope.row)" link type="primary">发送消息</el-button>
+          <el-button @click="openNews(scope.row)" link type="primary">上传运动处方(健康内容)</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -245,6 +255,30 @@ const newsRef = ref<any>(null)
 const isShow =async (row) => {
   await request({
     url: `api/admin/user/video/${row.id}`,
+    method: 'put',
+  }).then((res) => {
+    ElMessage.success('操作成功')
+    actions.queryAll()
+  }).catch((err) => {
+    ElMessage.error('操作失败')
+  })
+}
+
+const changeTask =async (row) => {
+  await request({
+    url: `api/admin/user/task/${row.id}`,
+    method: 'put',
+  }).then((res) => {
+    ElMessage.success('操作成功')
+    actions.queryAll()
+  }).catch((err) => {
+    ElMessage.error('操作失败')
+  })
+}
+
+const changeWeekChange =async (row) => {
+  await request({
+    url: `api/admin/user/challenge/${row.id}`,
     method: 'put',
   }).then((res) => {
     ElMessage.success('操作成功')

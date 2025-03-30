@@ -4,7 +4,7 @@
       <el-table :data="tb.list" element-loading-text="Loading" fit highlight-current-row border align="center" style="width: 100%; overflow-x: auto">
         <el-table-column prop="id" label="用户ID" align="center">
           <template #default="scope">
-            {{ scope.row.id }}
+            {{ scope.row.userId }}
           </template>
         </el-table-column>
 
@@ -22,7 +22,7 @@
 
         <el-table-column prop="email" label="任务内容" align="center">
           <template #default="scope">
-            {{ scope.row.qus }}
+            {{ scope.row.content }}
           </template>
         </el-table-column>
 
@@ -36,7 +36,7 @@
 
         <el-table-column prop="email" label="上传的任务图片" align="center">
           <template #default="scope">
-            <el-image :src="scope.row.email" fit="cover" />
+            <el-image :src="scope.row.img" fit="cover" />
           </template>
         </el-table-column>
       </el-table>
@@ -51,10 +51,7 @@
         @size-change="(v) => actions.sizeChange(v)"
         @current-change="(v) => actions.pageChange(v)" />
     </div>
- 
-  
     </div>
-
     <template #footer>
       <div class="foot" style="display: flex; justify-content: space-evenly; margin: -20px 0 40px 0">
         <el-button @click="open = false" size="large" style="width: 120px">关闭弹窗</el-button>
@@ -146,9 +143,9 @@ const getList = async () => {
 
 const getStatusType = (status: string): string => {
   switch (status) {
-    case 'inProgress':
+    case 'start':
       return 'warning'
-    case 'completed':
+    case 'over':
       return 'success'
 
     default:
@@ -158,9 +155,9 @@ const getStatusType = (status: string): string => {
 
 const getStatusText = (status: string): string => {
   switch (status) {
-    case 'inProgress':
+    case 'start':
       return '进行中'
-    case 'completed':
+    case 'over':
       return '完成任务'
 
     default:
@@ -178,6 +175,7 @@ defineExpose({
 <style scoped lang="less">
 .all-container {
   display: flex;
+  flex-direction: column;
   margin-top: 20px;
   width: 100%;
   padding: 0 20px 20px 20px;
