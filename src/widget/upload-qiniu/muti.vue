@@ -201,34 +201,34 @@ const onSelectFile = async (file: UploadFile, files: UploadFiles, replaceIndex?:
     return
   }
   let _folderName = props.folderName
-  if (props.allowFiles) {
-    let isTarget = false
-    for (const type of props.allowFiles) {
-      if (~_fileType.indexOf(type)) {
-        isTarget = true
-        break
-      }
-    }
-    if (!isTarget) {
-      ElNotification({
-        title: '请上传指定格式的文件',
-        message: '仅支持:' + props.allowFiles.join(','),
-        type: 'warning',
-        duration: 2000
-      })
-      return
-    }
-  } else {
-    if (!~_fileType.indexOf('jpg') && !~_fileType.indexOf('jpeg') && !~_fileType.indexOf('png') && !~_fileType.indexOf('gif')) {
-      ElNotification({
-        title: '请上传图片',
-        message: '仅支持上传图片',
-        type: 'warning',
-        duration: 2000
-      })
-      return
-    }
-  }
+  // if (props.allowFiles) {
+  //   let isTarget = false
+  //   for (const type of props.allowFiles) {
+  //     if (~_fileType.indexOf(type)) {
+  //       isTarget = true
+  //       break
+  //     }
+  //   }
+  //   if (!isTarget) {
+  //     ElNotification({
+  //       title: '请上传指定格式的文件',
+  //       message: '仅支持:' + props.allowFiles.join(','),
+  //       type: 'warning',
+  //       duration: 2000
+  //     })
+  //     return
+  //   }
+  // } else {
+  //   if (!~_fileType.indexOf('jpg') && !~_fileType.indexOf('jpeg') && !~_fileType.indexOf('png') && !~_fileType.indexOf('gif')) {
+  //     ElNotification({
+  //       title: '请上传图片',
+  //       message: '仅支持上传图片',
+  //       type: 'warning',
+  //       duration: 2000
+  //     })
+  //     return
+  //   }
+  // }
   uploading.value = true
   batchLimit(4, async () => {
     const data = await request.request({

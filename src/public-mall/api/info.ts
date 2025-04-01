@@ -5,38 +5,27 @@ const { request } = http;
  
 /** 健康信息模型 */ 
 export interface InfoModel { 
- userId?: number; // 用户id
- name?: string; // 名字
- phone?: string; // 手机号
- question?: string; // 题目
-  questionAnswer?: boolean; // 题目答案
-  userAnswer?: boolean; // 用户答案
+  name: string; // 名字 
+  phone: string; // 手机号 
+  point:number; // 积分
+  userId: number; // 用户id
+  createdAt: string; // 创建时间
 } 
  
 /** 搜索条件 */ 
-export  interface InfoQueryParams extends BasicQueryParams { 
-  recordId?: number; // 新增记录id参数 
+export interface InfoQueryParams extends BasicQueryParams { 
+  prodId?: number; // 新增记录id参数 
 } 
  
 
-/** 分页响应模型 */ 
-interface PagingRes<T> { 
-  count: number; 
-  rows: T[]; 
-} 
  
-/** 通用响应模型 */ 
-interface Response<T> { 
-  code: number; 
-  data: T; 
-  msg: string; 
-} 
+
  
 /** 健康信息数据源 */ 
-export default class  InfoQuery extends Queryable<InfoModel, InfoQueryParams> { 
+export default class InfoQuery extends Queryable<InfoModel, InfoQueryParams> { 
   /** 对象名称 */ 
   get objectName(): string { 
-    return '参与人信息'; 
+    return '兑换信息'; 
   } 
  
   /** 默认内容 */ 
@@ -64,12 +53,12 @@ export default class  InfoQuery extends Queryable<InfoModel, InfoQueryParams> {
   /** 分页查询健康参与信息 */ 
   async all(params: InfoQueryParams) { 
     const res = await request({ 
-      url: `api/admin/challenge/get/record/page`, 
+      url: `api/admin/prod/get/user/page`, 
       method: 'get', 
       params: { 
         pageNum: params.pageNum,  
         pageSize: params.pageSize,  
-        recordId: params.recordId ||0
+        prodId: params.prodId ||0
       } 
     }); 
     console.log(res.data,'res.data');
@@ -80,4 +69,6 @@ export default class  InfoQuery extends Queryable<InfoModel, InfoQueryParams> {
       total: res.data.count  
     }; 
   } 
+ 
+  
 } 

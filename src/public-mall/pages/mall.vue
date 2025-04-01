@@ -58,7 +58,7 @@
 
       <el-table-column prop="count" label="兑换人信息" align="center" width="120" >
         <template #default="{row}">
-          <el-button type="text">查看</el-button>
+          <el-button type="text" @click="openInfo(row)">查看</el-button>
         </template>
       </el-table-column>
 
@@ -157,6 +157,8 @@
         </el-button>
       </template>
     </el-dialog>
+
+    <Detail ref="detailRef" @close="actions.queryAll()" />
   </div>
 </template>
 
@@ -164,6 +166,7 @@
 import refTable from '@/public/basic-table'
 import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
+import Detail from './detail.vue'
 import MallQuery, { MallModel, MallQueryParams } from '../api/mall' // 修改点6：引用修正
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useValidate } from '@/hooks/web/useValidate'
@@ -181,6 +184,7 @@ const [tb, actions] = refTable<MallModel, MallQueryParams, MallQuery>(
   new MallQuery(),{}
 )
 
+const detailRef = ref<any>(null)
 
 
 // 修改点8：状态切换处理
@@ -224,5 +228,9 @@ exportCel('兑换信息', headers, mockData, '兑换信息');
   //   responseType: 'blob',
   // })
   // ElMessage.success('导出成功')
+}
+
+const openInfo = (row) => {
+  detailRef.value.showModal(row)
 }
 </script>

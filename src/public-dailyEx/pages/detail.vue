@@ -109,37 +109,7 @@ const savemsg = async () => {
   }
 }
 
-const InfoList = ref<InfoModel[]>([
-  {
-    id: 1,
-    name: '腾举',
-    phone: '1234567890',
-    isConnect: true,
-    email: '跑步10分钟',
-    qus: '跑步10分钟随机拍照',
-    status: 'inProgress'
-  },
-  {
-    id: 2,
-    name: '小明',
-    phone: '1234567890',
-    isConnect: false,
-    email: '跑步10分钟',
-    qus: '跑步10分钟随机拍照',
-    status: 'completed'
-  }
-])
-const getList = async () => {
-  try {
-    const res = await request({
-      url: `api/admin/message/list`,
-      method: 'GET'
-    })
-    InfoList.value = res.data
-  } catch (error) {
-    ElMessage.error('获取信息失败')
-  }
-}
+
 
 const getStatusType = (status: string): string => {
   switch (status) {

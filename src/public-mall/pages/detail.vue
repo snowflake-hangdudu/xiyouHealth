@@ -20,28 +20,32 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="content" label="每周挑战内容" align="center">
+        <el-table-column prop="email" label="使用的积分" align="center">
           <template #default="scope">
-            {{ scope.row.content }}
+            {{ scope.row.point }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="status" label="挑战状态" align="center">
+        <el-table-column prop="status" label="商品名称" align="center">
           <template #default="scope">
-            <el-tag :type="getStatusType(scope.row.status)" effect="light">
-              {{ getStatusText(scope.row.status) }}
-            </el-tag>
+           {{ goods }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="content" label="挑战完成图片" align="center">
-          <template #default="scope">
-            <el-image :src="scope.row.img" style="max-width: 100px; max-height: 100px"></el-image>
-          </template>
-        </el-table-column>
+  
       </el-table>
+      <div class="pagination-container" v-if="tb.total">
+      <el-pagination
+        v-model:current-page="tb.query.pageNum"
+        :page-sizes="[5, 20, 30, 50, 100, 200]"
+        v-model:page-size="tb.query.pageSize"
+        :total="tb.total"
+        background
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="(v) => actions.sizeChange(v)"
+        @current-change="(v) => actions.pageChange(v)" />
     </div>
-
+    </div>
     <template #footer>
       <div class="foot" style="display: flex; justify-content: space-evenly; margin: -20px 0 40px 0">
         <el-button @click="open = false" size="large" style="width: 120px">关闭弹窗</el-button>
@@ -65,32 +69,34 @@ const { request } = http
 const open = ref(false)
 
 const id = ref<number | null>(null) // 用户ID
+const goods = ref<string>('') // 商品名称
 
 /** 创建表格，与表格相关操作 */
 const [tb, actions] = refTable<InfoModel, InfoQueryParams, InfoQuery>(new InfoQuery(), {})
 
-const showModal = (row: InfoModel) => {
+const showModal = (row) => {
+  console.log('row111', row)
   open.value = true
   if (row.id) {
-    id.value = row.id
-    tb.query.recordId = row.id
+
+    tb.query.prodId = row.id
+    goods.value = row.title
     actions.queryAll({resetPage: true})
+
+
   } else {
     ElMessage.error('获取信息失败')
   }
 }
 
 const savemsg = async () => {
-  if (!msg.value) {
-    ElMessage.error('请输入消息')
-    return
-  }
+
   try {
     await request({
       url: `api/admin/message/insert`,
       method: 'POST',
       data: {
-        msg: msg.value || null,
+      
         receiveId: id.value,
         receiveType: 'student'
       }
@@ -101,8 +107,6 @@ const savemsg = async () => {
     ElMessage.error('消息发送失败')
   }
 }
-
-
 
 
 
@@ -140,6 +144,7 @@ defineExpose({
 <style scoped lang="less">
 .all-container {
   display: flex;
+  flex-direction: column;
   margin-top: 20px;
   width: 100%;
   padding: 0 20px 20px 20px;

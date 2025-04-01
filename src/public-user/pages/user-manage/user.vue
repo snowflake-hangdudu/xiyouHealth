@@ -49,6 +49,23 @@
         </template>
       </el-table-column>
 
+      
+      <el-table-column prop="filesUrl" label="运动处方" align="center">
+        <!-- 修改为 avatar，与 UserModel 对应 -->
+        <template #default="scope">
+          <div v-for=" (item,index) in scope.row.filesUrl?.split(',')">
+        
+          <el-link 
+  type="primary" 
+  :href="qiniuUrl(item)" 
+  target="_blank"
+>
+  查看处方 PDF 
+</el-link>
+        </div>
+        </template>
+      </el-table-column>
+
       <!-- <el-table-column prop="password" label="是否设置密码" align="center">
  
         <template #default="scope">
@@ -127,7 +144,7 @@
           <el-button @click="openGroup(scope.row)" link type="primary">组队</el-button>
           <el-button @click="openTask(scope.row)" link type="primary">绑定任务</el-button>
           <el-button @click="openNews(scope.row)" link type="primary">发送消息</el-button>
-          <el-button @click="openNews(scope.row)" link type="primary">上传运动处方(健康内容)</el-button>
+          <el-button @click="openUpload(scope.row)" link type="primary">上传运动处方(健康内容)</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -151,6 +168,8 @@
   <Task ref="taskRef" @close="actions.queryAll()" />
   <!-- 消息弹窗 -->
   <News ref="newsRef" @close="actions.queryAll()" />
+  <!-- 上传运动处方弹窗 -->
+  <Upload ref="uploadRef" @close="actions.queryAll()" />
 
 </template>
 
@@ -161,7 +180,7 @@ import { Plus } from '@element-plus/icons-vue'
 import Group from './group.vue'
 import Task from './task.vue'
 import News from './news.vue'
-
+import Upload from './upload.vue'
 import refTable from '@/public/basic-table'
 import UserQuery, { UserModel, UserQueryParams } from '../../api/user' // 修改为 UserQueryParams
 import { qiniuUrl } from '@/config/qiniu'
@@ -251,6 +270,7 @@ const mockData = [
 const groupRef = ref<any>(null)
 const taskRef = ref<any>(null)
 const newsRef = ref<any>(null)
+const uploadRef = ref<any>(null)
 
 const isShow =async (row) => {
   await request({
@@ -298,5 +318,9 @@ const openTask = (row: UserModel) => {
 
 const openNews = (row: UserModel) => {
   newsRef.value.showModal(row)
+}
+
+const openUpload = (row: UserModel) => {
+  uploadRef.value.showModal(row)
 }
 </script>
