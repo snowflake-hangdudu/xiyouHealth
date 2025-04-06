@@ -78,12 +78,9 @@ const showModal = (row) => {
   console.log('row111', row)
   open.value = true
   if (row.id) {
-
     tb.query.prodId = row.id
     goods.value = row.title
     actions.queryAll({resetPage: true})
-
-
   } else {
     ElMessage.error('获取信息失败')
   }

@@ -39,6 +39,19 @@
             <el-image :src="scope.row.img" fit="cover" />
           </template>
         </el-table-column>
+
+        <el-table-column prop="question" label="问题" align="center">
+          <template #default="scope">
+            {{ scope.row.question }}
+          
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="question" label="问题" align="center">
+          <template #default="scope">
+            {{ scope.row.fellUnwell == 1 ? '一切正常' : scope.row.fellUnwell == 2 ? '身体不适' : scope.row.fellUnwell == 3 ? '出现不适' : '--' }}
+          </template>
+        </el-table-column>
       </el-table>
       <div class="pagination-container" v-if="tb.total">
       <el-pagination

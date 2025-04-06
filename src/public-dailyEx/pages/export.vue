@@ -52,26 +52,32 @@ const exportExcel = async () => {
 let res = await request({
     url: `api/admin/task/get/excel/list`,
     method: 'GET',
-    data: {
+    params: {
       startTime: timeRange.value[0],
       endTime: timeRange.value[1]
     }
   })
-  let arr:any = []
-  let mockData = res.data.map(item  => { 
-    if(item.userTaskRecordList && item.userTaskRecordList.length > 0){
-      item.userTaskRecordList.forEach(element => {
-        arr.push({
-          name: item.name,
-          phone: item.phone,
-          [item.createdAt]:element.createdAt,
-          status: element.status == 'over' ? '已完成' : '未完成',
-        })
-      });
-      
-    }
-  
-  }); 
+
+  let mockData = res.data.map(item  => ({
+  name: item.name, 
+  phone: item.phone, 
+  content: item.userTaskRecordList?.filter(record  => 
+    record.status  === "over"
+  ).map(record => 
+    record.createdAt.slice(0,  10) // 截取日期部分 
+  ).join(',') || '',
+  count: item.userTaskRecordList?.filter(record  => 
+    record.status  === "over"
+  ).length || 0,
+
+}));
+  console.log('mockData', mockData)
+  let headers = [ 
+    { label: '姓名', value: 'name', width: 15 }, 
+    { label: '手机号', value: 'phone', width: 20 }, 
+    { label: '完成任务日期', value: 'content', width: 50 }, 
+    { label: '完成任务数量', value: 'count', width: 20 },
+  ];
 
 
  

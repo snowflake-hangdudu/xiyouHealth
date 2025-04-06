@@ -44,7 +44,7 @@
       <!-- 完成任务天数 -->
       <el-table-column prop="overTaskCount" label="完成任务次数" align="center">
         <template #default="scope">
-          <span>{{ scope.row.overTaskCount }} 天</span>
+          <span>{{ scope.row.overTaskCount }} </span>
         </template>
       </el-table-column>
 
@@ -59,9 +59,7 @@
       <el-table-column prop="pointsChange" label="本周积分变化情况记录" align="center" width="400">
         <template #default="scope">
           <el-popover placement="right" :width="400" trigger="hover">
-            <template #reference>
-              <el-button type="primary" size="small">查看详情</el-button>
-            </template>
+        
             <!-- <el-table :data="scope.row.pointsChange" style="width: 100%">
               <el-table-column property="day" label="日期" width="80" />
               <el-table-column property="type" label="类型" width="180" />
@@ -75,7 +73,7 @@
             </el-table> -->
           </el-popover>
           <div>
-            总积分变化：
+         
             <!-- <span :class="{ 'success-text': getTotalPoints(scope.row.pointsChange) > 0, 'danger-text': getTotalPoints(scope.row.pointsChange) < 0 }">
               {{ getTotalPoints(scope.row.pointsChange) > 0 ? '+' : '' }}{{ getTotalPoints(scope.row.pointsChange) }}
             </span> -->
