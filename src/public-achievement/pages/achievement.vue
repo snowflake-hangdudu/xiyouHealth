@@ -58,26 +58,7 @@
       <!-- 积分变化情况 -->
       <el-table-column prop="pointsChange" label="本周积分变化情况记录" align="center" width="400">
         <template #default="scope">
-          <el-popover placement="right" :width="400" trigger="hover">
-        
-            <!-- <el-table :data="scope.row.pointsChange" style="width: 100%">
-              <el-table-column property="day" label="日期" width="80" />
-              <el-table-column property="type" label="类型" width="180" />
-              <el-table-column property="points" label="积分变化" width="100">
-                <template #default="{ row }">
-                  <span :class="{ 'success-text': row.points > 0, 'danger-text': row.points < 0 }">
-                    {{ row.points > 0 ? '+' : '' }}{{ row.points }}
-                  </span>
-                </template>
-              </el-table-column>
-            </el-table> -->
-          </el-popover>
-          <div>
-         
-            <!-- <span :class="{ 'success-text': getTotalPoints(scope.row.pointsChange) > 0, 'danger-text': getTotalPoints(scope.row.pointsChange) < 0 }">
-              {{ getTotalPoints(scope.row.pointsChange) > 0 ? '+' : '' }}{{ getTotalPoints(scope.row.pointsChange) }}
-            </span> -->
-          </div>
+          <el-button type="text" @click="() => openDetail(scope.row)">查看详情</el-button>
         </template>
       </el-table-column>
 
@@ -104,11 +85,13 @@
   </div>
   <!-- 编辑对话框 -->
   <Step @close="actions.queryAll()" ref="stepRef"></Step>
+  <Detail ref="detailRef"  />
 </template>
 
 <script lang="ts" setup>
 import Step from './steps.vue'
 import refTable from '@/public/basic-table'
+import Detail from './detail.vue'
 import { ref, onMounted } from 'vue'
 import AchQuery, { AchModel, AchQueryParmas } from '../api/ach'
 import http from '@/config/axios'
@@ -133,8 +116,13 @@ const getTotalPoints = (pointsChange: any[]) => {
 }
 
 const stepRef = ref(null)
+const detailRef = ref(null)
 const openStep = (row) => {
   stepRef.value?.showModal(row)
+}
+
+const openDetail = (row) => {
+  detailRef.value?.showModal(row)
 }
 
 tb.total = tb.list.length

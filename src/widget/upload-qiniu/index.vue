@@ -91,8 +91,8 @@
           <div class="child-btm">
             <div :style="important ? 'color: #F56C6C' : ''">
               <span v-if="important" style="color: #f56c6c; font-size: 12px">*</span>
-              <span v-if="!title">最大:{{ Math.floor(maxSize / 1024 / 1024) }}M</span>
-              <span v-else>{{ title }}{{ `(<=${Math.floor(maxSize / 1024 / 1024)}M)` }}</span>
+              <!-- <span v-if="!title">最大:{{ Math.floor(maxSize / 1024 / 1024) }}M</span> -->
+              <!-- <span v-else>{{ title }}{{ `(<=${Math.floor(maxSize / 1024 / 1024)}M)` }}</span> -->
             </div>
           </div>
         </div>
